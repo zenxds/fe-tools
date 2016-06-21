@@ -1,0 +1,47 @@
+@import 'reset.styl'
+@import 'global.styl'
+@import 'layout.styl'
+
+
+/**
+ * nav
+ */
+.nav
+    a
+        display: block
+        padding: 0.1rem 0.15rem
+        border-top: 1px solid $BORDER_COLOR
+        color: #777
+
+    a:hover
+        color: #333
+
+    a.v-link-active
+        background: $MAIN_COLOR
+        color: #FFF
+
+    li:first-child a
+        border-top: none
+
+
+/*
+ * content
+ */
+.content
+    .text
+    textarea
+        display: flex
+        width: 100%
+        border: 1px solid #DDD
+
+    .text
+        padding: 0 0.1rem
+
+    textarea
+        padding: 0.1rem
+        min-height: 3rem
+
+.footer
+    text-align: center
+    color: #999
+    margin-top: 0.2rem
