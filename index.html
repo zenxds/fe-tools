@@ -10,12 +10,13 @@
 <body>
 <div id="app"></div>
 
-<script src="node_modules/jquery/dist/jquery.min.js"></script>
-<script src="node_modules/toastr/build/toastr.min.js"></script>
 <script>
-window.jQuery = window.$ = require('jQuery')
-window.toastr = require('toastr')
+// electron环境下按道理不应该再使用webpack打包，对于vue组件等打包进去，其它使用_require来进行require
+if (window.require) {
+    window._require = require
+    window.toastr = require('toastr')
+}
 </script>
-<script src="dist/js/app.js"></script>
+<script src="dist/app.js"></script>
 </body>
 </html>

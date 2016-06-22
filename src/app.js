@@ -1,7 +1,7 @@
 require('./styl/app.styl')
 
-import Vue from 'vue'
-import Router from 'vue-router'
+let Vue = _require('vue')
+let Router = _require('vue-router')
 Vue.use(Router)
 
 require('./filter/time.js')
@@ -21,7 +21,7 @@ import CSS from './component/css.vue'
 import Time from './component/time.vue'
 import REG from './component/reg.vue'
 
-var router = new Router()
+let router = new Router()
 
 router.map({
     '/home': {

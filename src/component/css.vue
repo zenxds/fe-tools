@@ -11,8 +11,8 @@
 
 <script>
 const { clipboard } = require('electron')
-const CleanCSS = require('clean-css')
-const css = require('css')
+const CleanCSS = _require('clean-css')
+const css = _require('css')
 
 export default {
     data: function() {

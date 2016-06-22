@@ -12,7 +12,7 @@
 <script>
 const { remote, clipboard, nativeImage } = require('electron')
 const fs = require('fs')
-const mime = require('mime')
+const mime = _require('mime')
 
 function toDataURL(files) {
     return files.map(function(file) {

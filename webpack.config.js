@@ -1,12 +1,10 @@
 module.exports = {
     entry: "./src/app.js",
     output: {
-        path: "./dist/js",
-        publicPath: "/dist/js/",
+        path: "./dist",
         filename: "app.js"
     },
     externals: {
-        'uglify-js': 'uglify-js'
     },
     target: 'electron',
     module: {

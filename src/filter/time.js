@@ -1,5 +1,5 @@
-import Vue from 'vue'
-import moment from 'moment'
+let Vue = _require('vue')
+let moment = _require('moment')
 
 Vue.filter('moment', function(time, format) {
     time = moment(time)

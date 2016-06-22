@@ -32,7 +32,7 @@
 
 <script>
 const { clipboard } = require('electron')
-const moment = require('moment')
+const moment = _require('moment')
 
 export default {
     data: function() {
