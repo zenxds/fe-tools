@@ -1,6 +1,6 @@
 {
   "name": "FE-Tools",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "FE Tools",
   "main": "index.js",
   "scripts": {
@@ -8,7 +8,7 @@
     "start": "./node_modules/.bin/electron .",
     "dev": "webpack-dev-server --inline --hot --quiet --port 9005",
     "build": "webpack --watch",
-    "pack": "electron-packager . --platform=mas --arch=x64 --prune --ignore=src --icon=app.icns --out=release --overwrite"
+    "pack": "electron-packager . --platform=mas --arch=x64 --prune --ignore=src --icon=app.icns --out=release --overwrite --app-version=0.1.1"
   },
   "keywords": [
     "GUI",
