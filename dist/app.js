@@ -177,7 +177,6 @@
 	        }
 	    });
 	}
-	showUpdateDialog();
 
 	// 检查更新
 	checkUpdate();
