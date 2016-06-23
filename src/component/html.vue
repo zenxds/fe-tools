@@ -12,8 +12,8 @@
 
 <script>
 const { clipboard } = require('electron')
-const CleanCSS = _require('clean-css')
-const beautifyCSS = _require('js-beautify').css
+const beautifyHTML = _require('js-beautify').html
+const minify = _require('html-minifier').minify
 
 export default {
     data: function() {
@@ -29,11 +29,18 @@ export default {
             }
 
             try {
-                this.input = new CleanCSS({
-                    // 禁用选择器跟属性合并等高级功能，只做最纯粹的压缩
-                    advanced: false,
-                    aggressiveMerging: false
-                }).minify(input).styles
+                this.input = minify(input, {
+                    collapseBooleanAttributes: true,
+                    collapseWhitespace: true,
+                    minifyCSS: true,
+                    minifyJS: true,
+                    removeComments: true,
+                    removeEmptyAttributes: true,
+                    // 删除值是默认值的属性
+                    removeRedundantAttributes: true,
+                    removeScriptTypeAttributes: true,
+                    removeStyleLinkTypeAttributes: true
+                })
                 toastr.success(g_config.copySuccessMsg)
             } catch (e) {
                 toastr.error(e.toString())
@@ -46,7 +53,7 @@ export default {
             }
 
             try {
-                this.input = beautifyCSS(input)
+                this.input = beautifyHTML(input)
                 toastr.success(g_config.copySuccessMsg)
             } catch (e) {
                 toastr.error(e.toString())

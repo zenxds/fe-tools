@@ -50,7 +50,7 @@ export default {
             let target = event.target
             let text = target.dataset.t
             clipboard.writeText(text)
-            toastr.success('已复制到剪切板')
+            toastr.success(g_config.copySuccessMsg)
         },
 
         transform1: function() {
@@ -67,7 +67,7 @@ export default {
             this.output1 = time.format('YYYY-MM-DD HH:mm:ss')
 
             clipboard.writeText(this.output1)
-            toastr.success('已复制到剪切板')
+            toastr.success(g_config.copySuccessMsg)
         },
 
         transform2: function() {
@@ -84,7 +84,7 @@ export default {
 
             this.output2 = time.format('X')
             clipboard.writeText(this.output2)
-            toastr.success('已复制到剪切板')
+            toastr.success(g_config.copySuccessMsg)
         }
     },
 

@@ -10,6 +10,7 @@
                 <option value="8">8个空格</option>
             </select>
             <span class="btn" v-on:click="pretty">格式化</span>
+            <span class="btn btn-cancel" v-on:click="empty">清空</span>
         </div>
     </div>
 </template>
@@ -33,10 +34,14 @@ export default {
             try {
                 this.input = JSON.stringify(JSON.parse(input), null, parseInt(this.space))
                 clipboard.writeText(this.input)
-                toastr.success('已复制到剪切板')
+                toastr.success(g_config.copySuccessMsg)
             } catch (e) {
                 toastr.error(e.toString())
             }
+        },
+
+        empty: function() {
+            this.input = ''
         }
     }
 }

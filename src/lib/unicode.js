@@ -16,7 +16,7 @@ module.exports = {
     encode: to_ascii,
 
     decode: function(str) {
-        return str.replace(/\\u([0-9a-f]{4})|\\x([0-9a-f]{2})/g, function(match, p1, p2) {
+        return str.replace(/\\u([a-fA-F0-9]{4})|\\x([a-fA-F0-9]{2})/g, function(match, p1, p2) {
             return String.fromCharCode(parseInt(p1 || p2, 16))
         })
     }

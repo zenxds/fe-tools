@@ -1,7 +1,10 @@
 <template>
     <div class="page-img">
         <div class="drag-img" v-on:click="select" v-el:input>
-            <img v-show="output" v-bind:src="output" alt="">
+            <div v-show="output">
+                <img v-show="images.length === 1" :src="images[0]" alt="">
+                <span v-else>已选择{{ images.length }}张图片</span>
+            </div>
             <span v-else>拖入/选择 图片</span>
         </div>
 
@@ -13,32 +16,44 @@
 const { remote, clipboard, nativeImage } = require('electron')
 const fs = require('fs')
 const mime = _require('mime')
+const Promise = window.Promise
 
 function toDataURL(files) {
-    return files.map(function(file) {
-        // 统一成对象的形式
-        if (typeof file === 'string') {
-            file = {
-                path: file
+    return Promise.all(files.map(function(file) {
+        var path = typeof file === "string" ? file: file.path
+
+        var defer = Promise.defer()
+
+        fs.readFile(path, function(err, data) {
+            if (err) {
+                defer.reject(err)
+            } else {
+                data = data.toString('base64')
+                defer.resolve(`data:${mime.lookup(path)};base64,${data}`)
             }
-        }
+        })
 
-        try {
-            let data = fs.readFileSync(file.path).toString('base64')
-            return `data:${mime.lookup(file.path)};base64,${data}`
-        } catch (e) {
-            toastr.error(e.toString())
-        }
+        return defer.promise
 
+        // try {
+        //     let data = fs.readFileSync(path).toString('base64')
+        //     return `data:${mime.lookup(path)};base64,${data}`
+        // } catch (e) {
+        //     toastr.error(e.toString())
+        // }
         // 原生的太坑爹，转出来的全是png
         // return nativeImage.createFromPath(file.path).toDataURL()
-    }).join('\n\n\n')
+    })).then(function(data) {
+        return data.join('\n\n\n')
+    }).catch(function(e) {
+        toastr.error(e.toString())
+    })
 }
 
 export default {
     data: function() {
         return {
-            output: ''
+            output: '',
         }
     },
 
@@ -46,8 +61,14 @@ export default {
         output: function(val) {
             if (val) {
                 clipboard.writeText(val)
-                toastr.success('已复制到剪切板')
+                toastr.success(g_config.copySuccessMsg)
             }
+        }
+    },
+
+    computed: {
+        images: function() {
+            return this.output.split('\n\n\n')
         }
     },
 
@@ -60,7 +81,9 @@ export default {
                 properties: ['openFile', 'multiSelections']
             })
             if (files && files.length) {
-                this.output = toDataURL(files)
+                toDataURL(files).then((data) => {
+                    this.output = data
+                })
             }
         }
     },
@@ -83,7 +106,9 @@ export default {
             if (files && files.length) {
                 // files是FileList对象的实例，不是真正的数组
                 files = [].slice.call(files)
-                this.output = toDataURL(files)
+                toDataURL(files).then((data) => {
+                    this.output = data
+                })
             }
 
             return false

@@ -1,7 +1,10 @@
 require('./styl/app.styl')
 
-let Vue = _require('vue')
-let Router = _require('vue-router')
+const { ipcRenderer, remote, shell } = _require('electron')
+const $ = _require('jquery')
+const Vue = _require('vue')
+const Router = _require('vue-router')
+const Package = require('../package.json')
 Vue.use(Router)
 
 require('./filter/time.js')
@@ -12,32 +15,32 @@ require('./filter/time.js')
 import App from './app.vue'
 
 import Home from './component/home.vue'
-import Str from './component/str.vue'
+import Encode from './component/encode.vue'
+import Crypto from './component/crypto.vue'
 import JSON from './component/json.vue'
 import IMG from './component/img.vue'
-import Text from './component/text.vue'
+import Qrcode from './component/qrcode.vue'
 import JS from './component/js.vue'
 import CSS from './component/css.vue'
+import HTML from './component/html.vue'
 import Time from './component/time.vue'
-import REG from './component/reg.vue'
 
-let router = new Router()
-
+const router = new Router()
 router.map({
     '/home': {
         component: Home
     },
-    '/str': {
-        component: Str
+    '/encode': {
+        component: Encode
     },
-    '/json': {
-        component: JSON
+    '/crypto': {
+        component: Crypto
     },
     '/img': {
         component: IMG
     },
-    '/text': {
-        component: Text
+    '/qrcode': {
+        component: Qrcode
     },
     '/js': {
         component: JS
@@ -45,14 +48,50 @@ router.map({
     '/css': {
         component: CSS
     },
+    '/html': {
+        component: HTML
+    },
+    '/json': {
+        component: JSON
+    },
     '/time': {
         component: Time
-    },
-    '/regexp': {
-        component: REG
     }
 })
 router.redirect({
     '*': '/home'
 })
 router.start(App, '#app')
+
+function checkUpdate(action) {
+    $.ajax({
+        url: Package.repository.package,
+        dataType: 'json',
+        cache: false,
+        success: function (data) {
+            if (data && data.release > Package.release) {
+                showUpdateDialog()
+            }
+        }
+    });
+}
+
+function showUpdateDialog() {
+    remote.dialog.showMessageBox({
+        type: 'info',
+        title: '检查更新',
+        message: "当前已有新版本",
+        defaultId: 0,
+        buttons: ['点击下载最新版本', '稍后提醒我']
+    }, function (index) {
+        if (index === 1) {
+
+        } else {
+            shell.openExternal(Package.repository.releases)
+        }
+    })
+}
+showUpdateDialog()
+
+// 检查更新
+checkUpdate()

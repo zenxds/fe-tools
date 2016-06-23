@@ -3,6 +3,7 @@
         <input type="text" class="text" v-model="input">
         <div class="section">
             <span class="btn" v-on:click="transform">转换</span>
+            <span class="btn btn-cancel" v-on:click="empty">清空</span>
         </div>
 
         <div class="section" v-show="output">
@@ -48,6 +49,10 @@ export default {
                     { name: 'image', extensions: ['png'] }
                 ],
             }, (file) => {
+                if (!file) {
+                    return
+                }
+
                 let data = this.output.toDataURL().replace(/^data:image\/\w+;base64,/, '')
 
                 fs.writeFile(file, data, 'base64', function(err) {
@@ -58,6 +63,11 @@ export default {
                     }
                 })
             })
+        },
+
+        empty: function() {
+            this.input = ''
+            this.output = ''
         }
     }
 }

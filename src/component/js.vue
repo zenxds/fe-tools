@@ -5,6 +5,7 @@
         <div class="section">
             <span class="btn" v-on:click="compress">压缩</span>
             <span class="btn" v-on:click="pretty">格式化</span>
+            <span class="btn btn-cancel" v-on:click="empty">清空</span>
         </div>
     </div>
 </template>
@@ -40,7 +41,7 @@ export default {
                     // 必选，不然在不同编码下会有问题
                     ascii_only: true
                 })
-                toastr.success('已复制到剪切板')
+                toastr.success(g_config.copySuccessMsg)
             } catch (e) {
                 toastr.error(e.toString())
             }
@@ -59,10 +60,14 @@ export default {
                     beautify: true
                 })
 
-                toastr.success('已复制到剪切板')
+                toastr.success(g_config.copySuccessMsg)
             } catch (e) {
                 toastr.error(e.toString())
             }
+        },
+
+        empty: function() {
+            this.input = ''
         }
     }
 }

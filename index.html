@@ -14,6 +14,9 @@
 // electron环境下按道理不应该再使用webpack打包，对于vue组件等打包进去，其它使用_require来进行require
 window._require = require
 window.toastr = require('toastr')
+var g_config = {
+    copySuccessMsg: '已复制到剪切板'
+}
 </script>
 <script src="dist/app.js"></script>
 </body>

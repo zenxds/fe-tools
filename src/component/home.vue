@@ -1,6 +1,6 @@
 <template>
     <div>
-        FE Tools v1.0.0
+        FE Tools v{{ version }}
     </div>
 </template>
 
@@ -8,7 +8,7 @@
 export default {
     data: function() {
         return {
-
+            version: require('../../package.json').version
         }
     },
     methods: {
