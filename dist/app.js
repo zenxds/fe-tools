@@ -643,15 +643,15 @@
 
 	module.exports = {
 		"name": "FE-Tools",
-		"version": "0.1.3",
-		"release": "0.1.3",
+		"version": "0.1.4",
+		"release": "0.1.4",
 		"description": "FE Tools",
 		"main": "index.js",
 		"scripts": {
 			"test": "npm run test",
 			"start": "./node_modules/.bin/electron .",
 			"build": "webpack --watch",
-			"pack": "electron-packager . --platform=mas --arch=x64 --prune --icon=app.icns --out=release --overwrite --app-version=0.1.1"
+			"pack": "electron-packager . --platform=mas --arch=x64 --prune --icon=app.icns --out=release --overwrite --app-version=0.1.4"
 		},
 		"repository": {
 			"type": "git",
