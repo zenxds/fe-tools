@@ -2,8 +2,8 @@
     <div class="page-time">
 
         <div class="section">
-            当前的时间戳为：{{ now | moment "X" }}
-            <span class="btn btn-success" data-t='{{ now | moment "X" }}' v-on:click="copy($event)">复制</span>
+            当前的时间戳为：{{ now | moment "x" }}
+            <span class="btn btn-success" data-t='{{ now | moment "x" }}' v-on:click="copy($event)">复制</span>
         </div>
         <div class="section">
             当前本地时间为：{{ now | moment "YYYY-MM-DD HH:mm:ss" }}
@@ -58,7 +58,7 @@ export default {
             if (!input) {
                 return
             }
-            let time = moment(input, 'X')
+            let time = moment(input, 'x')
             if (!time.isValid()) {
                 toastr.error('invalid time')
                 return
@@ -82,7 +82,7 @@ export default {
                 return
             }
 
-            this.output2 = time.format('X')
+            this.output2 = time.format('x')
             clipboard.writeText(this.output2)
             toastr.success(g_config.copySuccessMsg)
         }
