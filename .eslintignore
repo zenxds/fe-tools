@@ -1,0 +1,8 @@
+config/
+.eslintrc.js
+webpack.config.js
+electron-builder.js
+main.js
+update.js
+preload.js
+babel.config.js

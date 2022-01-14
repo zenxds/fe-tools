@@ -1,0 +1,25 @@
+/*
+ * 全局样式
+ */
+@import './variables.less';
+
+:global {
+  html, body, #app {
+    height: 100%;
+  }
+
+  #app {
+    .ant-layout-content {
+      background: #fff;
+    }
+
+    & > .ant-layout-has-sider {
+      min-height: 100%;
+    }
+  }
+
+  .container {
+    padding: 20px;
+    min-height: 200px;
+  }
+}
