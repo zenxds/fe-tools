@@ -9,7 +9,9 @@ declare namespace CryptoCommon {
     actions: Actions
   }
 
+  type CryptoTypes = 'md5' | 'sha1'
+
   interface IParams {
-    type: 'md5' | 'sha1'
+    type: CryptoTypes
   }
 }

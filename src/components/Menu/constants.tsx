@@ -28,6 +28,16 @@ export const menus: MenuItem[] = [
         children: []
       },
       {
+        name: 'URI',
+        code: paths.encodeUri,
+        children: []
+      },
+      {
+        name: 'URIComponent',
+        code: paths.encodeUriComponent,
+        children: []
+      },
+      {
         name: 'UTF8',
         code: paths.encodeUtf8,
         children: []

@@ -1,4 +1,4 @@
-declare namespace EncodeUtf8 {
+declare namespace EncodeCommon {
   /** mobx */
 
   type Store = import('./store').Store
@@ -7,5 +7,11 @@ declare namespace EncodeUtf8 {
   interface CommonProps {
     store: Store,
     actions: Actions
+  }
+
+  type EncodeTypes = 'base64' | 'utf8' | 'uri' | 'uriComponent'
+
+  interface IParams {
+    type: EncodeTypes
   }
 }

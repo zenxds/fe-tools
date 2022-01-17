@@ -13,7 +13,7 @@ import './less/antd.less'
 import './less/app.less'
 import './update'
 
-import paths from '@constants/paths'
+import paths, { commonPaths } from '@constants/paths'
 import Menu from '@components/Menu'
 
 function load(page: string) {
@@ -40,10 +40,9 @@ export default class App extends Component {
               <Route path={paths.randomStr} exact component={load('random/str')} />
               <Route path={paths.randomColor} exact component={load('random/color')} />
               <Route path={paths.randomNum} exact component={load('random/num')} />
-              <Route path="/crypto/:type" exact component={load('crypto/common')} />
-              <Route path={paths.encodeUtf8} exact component={load('encode/utf8')} />
-              <Route path={paths.encodeBase64} exact component={load('encode/base64')} />
+              <Route path={commonPaths.crypto} exact component={load('crypto/common')} />
               <Route path={paths.encodeFile} exact component={load('encode/file')} />
+              <Route path={commonPaths.encode} exact component={load('encode/common')} />
 
               <Route path="/" exact>
                 <Redirect to={paths.compressImage} />

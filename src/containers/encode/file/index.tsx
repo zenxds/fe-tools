@@ -72,7 +72,7 @@ export default class Page extends Component<CommonProps & EncodeFile.CommonProps
             <div className="ant-form-item-label">
               <label>输出</label>
             </div>
-            <Input.TextArea rows={5} value={output} />
+            <Input.TextArea rows={10} value={output} />
           </div>
         </Spin>
       </div>

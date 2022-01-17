@@ -10,14 +10,27 @@ interface IValues {
   input: string
 }
 
+const cryptoMethods: Record<CryptoCommon.CryptoTypes, (str: string) => string> = {
+  md5,
+  sha1
+}
+
 @inject('store', 'actions')
 @observer
 export default class PageForm extends Component<CryptoCommon.CommonProps & CryptoCommon.IParams> {
   formRef = React.createRef<FormInstance>()
 
+  componentDidUpdate(prevProps: CryptoCommon.CommonProps & CryptoCommon.IParams): void {
+    const { type } = this.props
+
+    if (prevProps.type !== type) {
+      this.formRef.current?.resetFields()
+    }
+  }
+
   handleFinish = (values: IValues): void => {
     const { type } = this.props
-    const output = type === 'md5' ? md5(values.input) : sha1(values.input)
+    const output = cryptoMethods[type](values.input)
     this.formRef.current?.setFieldsValue({ output })
   }
 
@@ -31,7 +44,7 @@ export default class PageForm extends Component<CryptoCommon.CommonProps & Crypt
         </Form.Item>
 
         <Form.Item label="输出" name="output">
-          <Input.TextArea />
+          <Input.TextArea rows={5} />
         </Form.Item>
 
         <Form.Item {...tailFormItemLayout}>

@@ -1,5 +1,6 @@
 import React, { Component, ReactElement } from 'react'
 import { observer, inject } from 'mobx-react'
+import { RouteComponentProps } from 'react-router-dom'
 
 import * as decorators from '@decorators'
 
@@ -14,11 +15,13 @@ import './less/styles.less'
 })
 @inject('store', 'actions')
 @observer
-export default class Page extends Component<EncodeUtf8.CommonProps> {
+export default class Page extends Component<EncodeCommon.CommonProps & RouteComponentProps<EncodeCommon.IParams>> {
   render(): ReactElement {
+    const { params } = this.props.match
+
     return (
       <div className="container">
-        <Form />
+        <Form type={params.type} />
       </div>
     )
   }
