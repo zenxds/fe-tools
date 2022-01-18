@@ -43,6 +43,9 @@ export default class App extends Component {
               <Route path={paths.encodeFile} exact component={load('encode/file')} />
               <Route path={commonPaths.encode} exact component={load('encode/common')} />
               <Route path={paths.formatColor} exact component={load('format/color')} />
+              <Route path={paths.formatTime} exact component={load('format/time')} />
+
+              <Route path={paths.ocr} exact component={load('other/ocr')} />
 
               <Route path="/" exact>
                 <Redirect to={paths.compressImage} />

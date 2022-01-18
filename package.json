@@ -107,6 +107,7 @@
     "color": "^4.2.0",
     "datauri": "^4.1.0",
     "electron-updater": "^4.3.5",
+    "tencentcloud-sdk-nodejs-ocr": "^4.0.275",
     "tinify": "^1.6.1"
   }
 }

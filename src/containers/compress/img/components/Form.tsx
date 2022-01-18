@@ -9,14 +9,15 @@ interface IProps {
   forwardRef: React.RefObject<FormInstance>
 }
 
-@inject('store', 'actions')
+@inject('store', 'actions', 'dataStore')
 @observer
-export default class PageForm extends Component<CompressIMG.CommonProps & IProps> {
+export default class PageForm extends Component<CommonProps & CompressIMG.CommonProps & IProps> {
   render(): ReactElement {
+    const { dataStore } = this.props
     return (
-      <Form ref={this.props.forwardRef} {...formItemLayout}>
+      <Form ref={this.props.forwardRef} initialValues={{ apiKey: dataStore.get('tinifyKey') || '' }} {...formItemLayout}>
         <Form.Item label="APIKey" name="apiKey" rules={[{ required: true }]}>
-          <Input />
+          <Input placeholder="tinypng API Key" />
         </Form.Item>
       </Form>
     )

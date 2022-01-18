@@ -86,16 +86,27 @@ export const menus: MenuItem[] = [
     code: 'format',
     children: [
       {
+        name: '时间',
+        code: paths.formatTime,
+        children: []
+      },
+      {
         name: '颜色',
         code: paths.formatColor,
         children: []
-      }
+      },
     ]
   },
   {
     name: '其他',
     code: 'other',
-    children: []
+    children: [
+      {
+        name: 'OCR',
+        code: paths.ocr,
+        children: []
+      },
+    ]
   }
 ]
 

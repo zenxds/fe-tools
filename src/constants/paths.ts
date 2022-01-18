@@ -14,6 +14,9 @@ const paths = {
   randomNum: '/random/num',
 
   formatColor: '/format/color',
+  formatTime: '/format/time',
+
+  ocr: '/other/ocr',
 }
 
 export const commonPaths = {

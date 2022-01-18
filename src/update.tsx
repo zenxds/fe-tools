@@ -50,7 +50,7 @@ ipcRenderer.on("update:downloaded", (event, message: UpdateInfo) => {
   )
 
   notification.success({
-    message: '新版本下载完成',
+    message: `新版本${message.version}下载完成`,
     description: '是否退出并立即更新',
     btn,
     key,
