@@ -1,15 +1,19 @@
 const paths = {
   compressImage: '/compress/image',
+
   cryptoMd5: '/crypto/md5',
   cryptoSha1: '/crypto/sha1',
+
   encodeUtf8: '/encode/utf8',
   encodeBase64: '/encode/base64',
   encodeUri: '/encode/uri',
   encodeUriComponent: '/encode/uriComponent',
   encodeFile: '/encode/file',
+
   randomStr: '/random/str',
-  randomColor: '/random/color',
   randomNum: '/random/num',
+
+  formatColor: '/format/color',
 }
 
 export const commonPaths = {

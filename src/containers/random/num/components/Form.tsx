@@ -25,8 +25,6 @@ export default class PageForm extends Component<RandomNum.CommonProps> {
   }
 
   render(): ReactElement {
-    const { store } = this.props
-
     return (
       <Form ref={this.formRef} {...formItemLayout} initialValues={{ min: 1, max: 100 }} onFinish={this.handleFinish}>
         <Form.Item label="最小" name="min" rules={[{ required: true }]}>
@@ -45,7 +43,6 @@ export default class PageForm extends Component<RandomNum.CommonProps> {
           <Button
             type="primary"
             htmlType="submit"
-            loading={store.isLoading}
           >
             提交
           </Button>

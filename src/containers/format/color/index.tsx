@@ -14,7 +14,7 @@ import './less/styles.less'
 })
 @inject('store', 'actions')
 @observer
-export default class Page extends Component<RandomColor.CommonProps> {
+export default class Page extends Component<FormatColor.CommonProps> {
   render(): ReactElement {
     return (
       <div className="container">

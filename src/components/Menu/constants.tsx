@@ -78,10 +78,16 @@ export const menus: MenuItem[] = [
         name: '数字',
         code: paths.randomNum,
         children: []
-      },
+      }
+    ]
+  },
+  {
+    name: '格式转换',
+    code: 'format',
+    children: [
       {
         name: '颜色',
-        code: paths.randomColor,
+        code: paths.formatColor,
         children: []
       }
     ]

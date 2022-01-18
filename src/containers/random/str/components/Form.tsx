@@ -24,8 +24,6 @@ export default class PageForm extends Component<RandomStr.CommonProps> {
   }
 
   render(): ReactElement {
-    const { store } = this.props
-
     return (
       <Form ref={this.formRef} {...formItemLayout} initialValues={{ length: 32 }} onFinish={this.handleFinish}>
         <Form.Item label="长度" name="length" rules={[{ required: true }]}>
@@ -40,7 +38,6 @@ export default class PageForm extends Component<RandomStr.CommonProps> {
           <Button
             type="primary"
             htmlType="submit"
-            loading={store.isLoading}
           >
             提交
           </Button>

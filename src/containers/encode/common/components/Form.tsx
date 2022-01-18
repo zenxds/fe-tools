@@ -65,8 +65,6 @@ export default class PageForm extends Component<EncodeCommon.CommonProps & Encod
   }
 
   render(): ReactElement {
-    const { store } = this.props
-
     return (
       <Form ref={this.formRef} {...formItemLayout} onFinish={this.handleFinish}>
         <Form.Item label="字符串" name="input" rules={[{ required: true }]}>
@@ -82,14 +80,12 @@ export default class PageForm extends Component<EncodeCommon.CommonProps & Encod
             <Button
               type="primary"
               onClick={this.handleSubmit.bind(this, 'encode')}
-              loading={store.isLoading}
             >
               编码
             </Button>
             <Button
               type="primary"
               onClick={this.handleSubmit.bind(this, 'decode')}
-              loading={store.isLoading}
             >
               解码
             </Button>

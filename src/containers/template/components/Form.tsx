@@ -19,8 +19,6 @@ export default class PageForm extends Component<Template.CommonProps> {
   }
 
   render(): ReactElement {
-    const { store } = this.props
-
     return (
       <Form ref={this.formRef} {...formItemLayout} onFinish={this.handleFinish}>
         <Form.Item label="字段1" name="field1" rules={[{ required: true }]}>
@@ -31,7 +29,6 @@ export default class PageForm extends Component<Template.CommonProps> {
           <Button
             type="primary"
             htmlType="submit"
-            loading={store.isLoading}
           >
             提交
           </Button>

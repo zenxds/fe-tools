@@ -35,8 +35,6 @@ export default class PageForm extends Component<CryptoCommon.CommonProps & Crypt
   }
 
   render(): ReactElement {
-    const { store } = this.props
-
     return (
       <Form ref={this.formRef} {...formItemLayout} onFinish={this.handleFinish}>
         <Form.Item label="字符串" name="input" rules={[{ required: true }]}>
@@ -51,7 +49,6 @@ export default class PageForm extends Component<CryptoCommon.CommonProps & Crypt
           <Button
             type="primary"
             htmlType="submit"
-            loading={store.isLoading}
           >
             提交
           </Button>

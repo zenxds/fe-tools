@@ -1,4 +1,4 @@
-declare namespace RandomColor {
+declare namespace FormatColor {
   /** mobx */
 
   type Store = import('./store').Store
@@ -8,4 +8,6 @@ declare namespace RandomColor {
     store: Store,
     actions: Actions
   }
+
+  type ColorType = 'hex' | 'rgb' | 'hsl'
 }

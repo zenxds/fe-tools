@@ -53,6 +53,7 @@
     "@dr.pogodin/babel-plugin-react-css-modules": "^6.5.4",
     "@loadable/component": "^5.15.2",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.4",
+    "@types/color": "^3.0.2",
     "@types/debug": "^4.1.4",
     "@types/jest": "^27.4.0",
     "@types/loadable__component": "^5.13.4",
@@ -103,6 +104,7 @@
     "webpack-dev-server": "^4.7.3"
   },
   "dependencies": {
+    "color": "^4.2.0",
     "datauri": "^4.1.0",
     "electron-updater": "^4.3.5",
     "tinify": "^1.6.1"

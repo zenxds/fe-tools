@@ -38,11 +38,11 @@ export default class App extends Component {
             <Switch>
               <Route path={paths.compressImage} exact component={load('compress/img')} />
               <Route path={paths.randomStr} exact component={load('random/str')} />
-              <Route path={paths.randomColor} exact component={load('random/color')} />
               <Route path={paths.randomNum} exact component={load('random/num')} />
               <Route path={commonPaths.crypto} exact component={load('crypto/common')} />
               <Route path={paths.encodeFile} exact component={load('encode/file')} />
               <Route path={commonPaths.encode} exact component={load('encode/common')} />
+              <Route path={paths.formatColor} exact component={load('format/color')} />
 
               <Route path="/" exact>
                 <Redirect to={paths.compressImage} />
