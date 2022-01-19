@@ -50,7 +50,7 @@ export default class PageForm extends Component<CryptoCommon.CommonProps & Crypt
             type="primary"
             htmlType="submit"
           >
-            提交
+            加密
           </Button>
         </Form.Item>
       </Form>

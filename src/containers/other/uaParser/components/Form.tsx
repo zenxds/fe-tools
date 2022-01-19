@@ -75,7 +75,7 @@ export default class PageForm extends Component<UAParser.CommonProps> {
               type="primary"
               htmlType="submit"
             >
-              提交
+              解析
             </Button>
           </Form.Item>
         </Form>

@@ -142,7 +142,7 @@ export default class Page extends Component<CommonProps & OCR.CommonProps> {
 
         <div styleName="textarea">
           <div className="ant-form-item-label">
-            <label>输出</label>
+            <label>结果</label>
           </div>
           <Input.TextArea rows={10} value={output} />
         </div>

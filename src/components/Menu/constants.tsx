@@ -121,6 +121,11 @@ export const menus: MenuItem[] = [
         code: paths.ocr,
         children: []
       },
+      {
+        name: '二维码生成',
+        code: paths.qrcode,
+        children: []
+      }
     ]
   }
 ]

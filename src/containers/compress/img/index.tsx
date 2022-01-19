@@ -83,11 +83,9 @@ export default class Page extends Component<CommonProps & CompressIMG.CommonProp
     }
 
     const savePath = files.length > 1 ? ipcRenderer.sendSync('showOpenDialog', {
-      message: '选择保存路径',
       defaultPath: path.dirname(this.getFilePath(files[0])),
       properties: ['openDirectory', 'createDirectory'],
     }): ipcRenderer.sendSync('showSaveDialog', {
-      message: '选择保存路径',
       defaultPath: this.getFilePath(files[0]),
       properties: []
     })

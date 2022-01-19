@@ -20,6 +20,7 @@ const paths = {
 
   ocr: '/other/ocr',
   uaParser: '/other/uaParser',
+  qrcode: '/other/qrcode',
 }
 
 export const commonPaths = {

@@ -39,7 +39,7 @@ export default class PageForm extends Component<RandomStr.CommonProps> {
             type="primary"
             htmlType="submit"
           >
-            提交
+            生成
           </Button>
         </Form.Item>
       </Form>

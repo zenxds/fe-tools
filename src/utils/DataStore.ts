@@ -14,7 +14,7 @@ const userDataPath = ipcRenderer.sendSync('getPath', 'userData')
 export default class FileStore {
   public options: StoreOptions
   public file: string
-  private cache: Record<string, string | number>
+  private cache: Record<string, string>
   private password: string
   private iv: string
 
@@ -52,7 +52,7 @@ export default class FileStore {
     return this.cache[key]
   }
 
-  set(key: string, value: string | number) {
+  set(key: string, value: string) {
     this.cache[key] = value
     this.save()
   }
