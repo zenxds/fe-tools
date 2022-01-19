@@ -40,10 +40,14 @@ export default class App extends Component {
               <Route path={paths.randomStr} exact component={load('random/str')} />
               <Route path={paths.randomNum} exact component={load('random/num')} />
               <Route path={commonPaths.crypto} exact component={load('crypto/common')} />
+
               <Route path={paths.encodeFile} exact component={load('encode/file')} />
               <Route path={commonPaths.encode} exact component={load('encode/common')} />
+
               <Route path={paths.formatColor} exact component={load('format/color')} />
               <Route path={paths.formatTime} exact component={load('format/time')} />
+              <Route path={paths.formatNumber} exact component={load('format/number')} />
+              <Route path={paths.formatVarName} exact component={load('format/varName')} />
 
               <Route path={paths.ocr} exact component={load('other/ocr')} />
 

@@ -20,7 +20,6 @@ module.exports = {
     __webpack_public_path__: true,
   },
   rules: {
-    '@typescript-eslint/indent': ['warn', 2],
     '@typescript-eslint/no-unused-vars': [
       'warn',
       {

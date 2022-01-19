@@ -31,8 +31,10 @@ export default class FileStore {
     if (fs.existsSync(file)) {
       const buffer = fs.readFileSync(file)
       try {
-        return JSON.parse(decrypt(buffer, this.password, this.iv).toString('utf8'))
-      } catch(err) {
+        return JSON.parse(
+          decrypt(buffer, this.password, this.iv).toString('utf8'),
+        )
+      } catch (err) {
         return {}
       }
     }
@@ -60,4 +62,3 @@ export default class FileStore {
     this.save()
   }
 }
-

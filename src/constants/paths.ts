@@ -15,6 +15,8 @@ const paths = {
 
   formatColor: '/format/color',
   formatTime: '/format/time',
+  formatNumber: '/format/number',
+  formatVarName: '/format/varName',
 
   ocr: '/other/ocr',
 }

@@ -7,5 +7,5 @@ const dataStore = new DataStore({
 })
 
 export default {
-  dataStore
+  dataStore,
 }

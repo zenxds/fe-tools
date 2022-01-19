@@ -1,18 +1,21 @@
 import {
   execSync as _execSync,
-  ExecSyncOptionsWithStringEncoding
+  ExecSyncOptionsWithStringEncoding,
 } from 'child_process'
 
 export function execSync(
   cmd: string,
-  options?: ExecSyncOptionsWithStringEncoding
+  options?: ExecSyncOptionsWithStringEncoding,
 ): string {
-  return _execSync(cmd, Object.assign(
-    {
-      encoding: 'utf8'
-    },
-    options || {}
-  ) as ExecSyncOptionsWithStringEncoding)
+  return _execSync(
+    cmd,
+    Object.assign(
+      {
+        encoding: 'utf8',
+      },
+      options || {},
+    ) as ExecSyncOptionsWithStringEncoding,
+  )
 }
 
 export const isMac = process.platform === 'darwin'

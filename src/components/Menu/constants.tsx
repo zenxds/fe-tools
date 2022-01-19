@@ -91,10 +91,20 @@ export const menus: MenuItem[] = [
         children: []
       },
       {
+        name: '数字',
+        code: paths.formatNumber,
+        children: []
+      },
+      {
         name: '颜色',
         code: paths.formatColor,
         children: []
       },
+      {
+        name: '变量名',
+        code: paths.formatVarName,
+        children: []
+      }
     ]
   },
   {

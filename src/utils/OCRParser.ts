@@ -21,37 +21,35 @@ export default class OCRParser {
   public constructor(options?: OCROptions) {
     this.options = options || {
       secretId: '',
-      secretKey: ''
+      secretKey: '',
     }
 
     const clientConfig = {
       // 腾讯云认证信息
       credential: {
         secretId: this.options.secretId,
-        secretKey: this.options.secretKey
+        secretKey: this.options.secretKey,
       },
       // 产品地域
       region: 'ap-shanghai',
       // 可选配置实例
       profile: {
         httpProfile: {
-          endpoint: 'ocr.tencentcloudapi.com'
-        }
-      }
+          endpoint: 'ocr.tencentcloudapi.com',
+        },
+      },
     }
     this.client = new OCRClient(clientConfig)
   }
 
-  public async parse(
-    image: string
-  ): Promise<OCR_ITEM[]> {
+  public async parse(image: string): Promise<OCR_ITEM[]> {
     const params = {
-      ImageBase64: image
+      ImageBase64: image,
     }
     const result = await this.client.RecognizeTableOCR(params)
     const ret: OCR_ITEM[] = []
 
-    result.TableDetections.forEach((item) => {
+    result.TableDetections.forEach(item => {
       item.Cells.forEach(cell => {
         const text = cell.Text.replace(/\s+/g, '')
         if (text) {

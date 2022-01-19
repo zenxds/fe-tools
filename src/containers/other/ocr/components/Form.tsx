@@ -33,14 +33,14 @@ export default class PageForm extends Component<
         {...formItemLayout}
       >
         <Form.Item
-          label="secretId"
+          label="SecretId"
           name="secretId"
           rules={[{ required: true }]}
         >
           <Input placeholder="tencent secretId" />
         </Form.Item>
         <Form.Item
-          label="secretKey"
+          label="SecretKey"
           name="secretKey"
           rules={[{ required: true }]}
         >
