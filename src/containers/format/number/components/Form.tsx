@@ -1,7 +1,6 @@
 import React, { Component, ReactElement } from 'react'
 import { inject, observer } from 'mobx-react'
 import { Form, Input, Space, Button } from 'antd'
-import Color from 'color'
 import { FormInstance } from 'antd/es/form'
 
 import { formItemLayout, tailFormItemLayout } from '@constants'

@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react'
 import * as decorators from '@decorators'
 
 import Form from './components/Form'
+import FormReg from './components/FormReg'
 import actions from './actions'
 import store from './store'
 import './less/styles.less'
@@ -19,6 +20,8 @@ export default class Page extends Component<RandomStr.CommonProps> {
     return (
       <div className="container">
         <Form />
+
+        <FormReg />
       </div>
     )
   }

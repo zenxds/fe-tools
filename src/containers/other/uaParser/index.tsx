@@ -14,7 +14,7 @@ import './less/styles.less'
 })
 @inject('store', 'actions')
 @observer
-export default class Page extends Component<Template.CommonProps> {
+export default class Page extends Component<UAParser.CommonProps> {
   render(): ReactElement {
     return (
       <div className="container">

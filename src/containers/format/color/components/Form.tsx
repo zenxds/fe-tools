@@ -1,15 +1,16 @@
 import React, { Component, ReactElement } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Form, Input, Space, Button } from 'antd'
-import Color from 'color'
+import { Form, Input, Space, Button, message } from 'antd'
 import { FormInstance } from 'antd/es/form'
+import Color from 'tinycolor2'
+import { SketchPicker, ColorResult, RGBColor } from 'react-color'
 
 import { randomColor } from '@utils'
 import { formItemLayout, tailFormItemLayout } from '@constants'
 
 interface IState {
   colorType: FormatColor.ColorType
-  rgb: string
+  color: string | RGBColor
 }
 
 import '../less/styles.less'
@@ -21,7 +22,7 @@ export default class PageForm extends Component<FormatColor.CommonProps> {
 
   state: IState = {
     colorType: 'hex',
-    rgb: ''
+    color: ''
   }
 
   componentDidMount() {
@@ -38,17 +39,26 @@ export default class PageForm extends Component<FormatColor.CommonProps> {
     })
   }
 
-  // https://github.com/Qix-/color/issues/127
-  handleTransform = (val: string): void => {
+  handleChangeComplete = (color: ColorResult) => {
+    this.handleTransform(color.rgb)
+  }
+
+  handleTransform = (val: string | RGBColor): void => {
     const color = Color(val)
+
+    if (!color.isValid()) {
+      message.error('颜色值不合法')
+      return
+    }
+
     this.formRef.current?.setFieldsValue({
-      hex: color.hex(),
-      rgb: color.rgb().string(),
-      hsl: color.hsl().string(),
+      hex: color.toHexString(),
+      rgb: color.toRgbString(),
+      hsl: color.toHslString(),
     })
 
     this.setState({
-      rgb: color.rgb().string()
+      color: color.toRgbString()
     })
   }
 
@@ -57,11 +67,11 @@ export default class PageForm extends Component<FormatColor.CommonProps> {
   }
 
   render(): ReactElement {
-    const { rgb } = this.state
+    const { color } = this.state
     return (
       <Form ref={this.formRef} {...formItemLayout} onFinish={this.handleFinish}>
         <Form.Item label="颜色">
-          <span styleName="color" style={{ background: rgb }}></span>
+          <SketchPicker color={color} onChangeComplete={this.handleChangeComplete} />
         </Form.Item>
 
         <Form.Item label="十六进制" name="hex">

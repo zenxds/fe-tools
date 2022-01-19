@@ -57,3 +57,8 @@ export function camelCase(str: string, isBig?: boolean): string {
 
   return (isBig ? ret.charAt(0).toUpperCase() : ret.charAt(0).toLowerCase()) + ret.slice(1)
 }
+
+export function stringToRegExp(str: string): RegExp {
+  const match = str.match(/^\/(.*?)\/([dgimsuy]*)$/)
+  return match ? new RegExp(match[1], match[2]) : new RegExp(str)
+}

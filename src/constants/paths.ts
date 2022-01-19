@@ -11,7 +11,7 @@ const paths = {
   encodeFile: '/encode/file',
 
   randomStr: '/random/str',
-  randomNum: '/random/num',
+  randomNumber: '/random/number',
 
   formatColor: '/format/color',
   formatTime: '/format/time',
@@ -19,6 +19,7 @@ const paths = {
   formatVarName: '/format/varName',
 
   ocr: '/other/ocr',
+  uaParser: '/other/uaParser',
 }
 
 export const commonPaths = {

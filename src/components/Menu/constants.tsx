@@ -76,7 +76,7 @@ export const menus: MenuItem[] = [
       },
       {
         name: '数字',
-        code: paths.randomNum,
+        code: paths.randomNumber,
         children: []
       }
     ]
@@ -111,6 +111,11 @@ export const menus: MenuItem[] = [
     name: '其他',
     code: 'other',
     children: [
+      {
+        name: 'UA解析',
+        code: paths.uaParser,
+        children: []
+      },
       {
         name: 'OCR',
         code: paths.ocr,
