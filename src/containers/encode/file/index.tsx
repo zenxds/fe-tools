@@ -67,14 +67,18 @@ export default class Page extends Component<CommonProps & EncodeFile.CommonProps
             </p>
             <p className="ant-upload-text">拖拽文件到此区域</p>
           </Upload.Dragger>
-
-          <div styleName="textarea">
-            <div className="ant-form-item-label">
-              <label>输出</label>
-            </div>
-            <Input.TextArea rows={10} value={output} />
-          </div>
         </Spin>
+
+        {
+          output && (
+            <div styleName="textarea">
+              <div className="ant-form-item-label">
+                <label>输出</label>
+              </div>
+              <Input.TextArea rows={6} value={output} />
+            </div>
+          )
+        }
       </div>
     )
   }

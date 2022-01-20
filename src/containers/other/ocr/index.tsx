@@ -58,16 +58,18 @@ export default class Page extends Component<CommonProps & OCR.CommonProps> {
 
   handleSettingOk = async(): Promise<void> => {
     const { dataStore } = this.props
-    const values = await this.settingFormRef.current?.validateFields()
 
-    message.success('保存成功')
-    dataStore.set('ocrSecretId', values.secretId)
-    dataStore.set('ocrSecretKey', values.secretKey)
-    this.initOCR()
+    try {
+      const values = await this.settingFormRef.current?.validateFields()
+      message.success('保存成功')
+      dataStore.set('ocrSecretId', values.secretId)
+      dataStore.set('ocrSecretKey', values.secretKey)
+      this.initOCR()
 
-    this.props.actions.merge({
-      showSettingModal: false
-    })
+      this.props.actions.merge({
+        showSettingModal: false
+      })
+    } catch(err) {}
   }
 
   handleCancelSetting = (): void => {
@@ -140,12 +142,16 @@ export default class Page extends Component<CommonProps & OCR.CommonProps> {
           </Upload.Dragger>
         </Spin>
 
-        <div styleName="textarea">
-          <div className="ant-form-item-label">
-            <label>结果</label>
-          </div>
-          <Input.TextArea rows={10} value={output} />
-        </div>
+        {
+          output && (
+            <div styleName="textarea">
+              <div className="ant-form-item-label">
+                <label>结果</label>
+              </div>
+              <Input.TextArea rows={10} value={output} />
+            </div>
+          )
+        }
 
         { this.renderSettingModal() }
       </div>

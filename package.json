@@ -1,5 +1,5 @@
 {
-  "name": "electron-app",
+  "name": "fe-tools",
   "version": "1.0.0",
   "description": "a electron app",
   "main": "main.js",
@@ -22,8 +22,7 @@
   "author": "GitHub",
   "license": "CC0-1.0",
   "autoUpdater": {
-    "enable": false,
-    "feedUrl": "http://127.0.0.1:9005/release"
+    "enable": false
   },
   "config": {
     "commitizen": {
@@ -115,6 +114,7 @@
     "electron-updater": "^4.3.5",
     "randexp": "^0.5.3",
     "tencentcloud-sdk-nodejs-ocr": "^4.0.275",
-    "tinify": "^1.6.1"
+    "tinify": "^1.6.1",
+    "tslib": "^2.3.1"
   }
 }

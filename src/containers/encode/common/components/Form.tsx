@@ -68,11 +68,11 @@ export default class PageForm extends Component<EncodeCommon.CommonProps & Encod
     return (
       <Form ref={this.formRef} {...formItemLayout} onFinish={this.handleFinish}>
         <Form.Item label="字符串" name="input" rules={[{ required: true }]}>
-          <Input.TextArea rows={5} />
+          <Input.TextArea rows={3} />
         </Form.Item>
 
         <Form.Item label="输出" name="output">
-          <Input.TextArea rows={10} />
+          <Input.TextArea rows={3} />
         </Form.Item>
 
         <Form.Item {...tailFormItemLayout}>

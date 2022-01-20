@@ -117,6 +117,11 @@ export const menus: MenuItem[] = [
         children: []
       },
       {
+        name: 'URL解析',
+        code: paths.urlParser,
+        children: []
+      },
+      {
         name: 'OCR',
         code: paths.ocr,
         children: []

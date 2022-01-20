@@ -7,7 +7,7 @@ import { UploadFile, UploadProps } from 'antd/lib/upload/interface'
 import { FormInstance } from 'antd/es/form'
 
 import path from 'path'
-import { ipcRenderer } from 'electron'
+import { ipcRenderer, shell } from 'electron'
 
 import * as decorators from '@decorators'
 
@@ -41,14 +41,15 @@ export default class Page extends Component<CommonProps & CompressIMG.CommonProp
   }
 
   handleSettingOk = async(): Promise<void> => {
-    const values = await this.settingFormRef.current?.validateFields()
-
-    message.success('保存成功')
-    tinify.key = values.apiKey
-    this.props.dataStore.set('tinifyKey', values.apiKey)
-    this.props.actions.merge({
-      showSettingModal: false
-    })
+    try {
+      const values = await this.settingFormRef.current?.validateFields()
+      message.success('保存成功')
+      tinify.key = values.apiKey
+      this.props.dataStore.set('tinifyKey', values.apiKey)
+      this.props.actions.merge({
+        showSettingModal: false
+      })
+    } catch(err) {}
   }
 
   handleCancelSetting = (): void => {
@@ -58,7 +59,12 @@ export default class Page extends Component<CommonProps & CompressIMG.CommonProp
   }
 
   componentDidMount() {
-    tinify.key = this.props.dataStore.get('tinifyKey') || ''
+    const key = this.props.dataStore.get('tinifyKey') || ''
+    if (key) {
+      tinify.key = key
+    } else {
+      this.handleSetting()
+    }
   }
 
   getUploadProps = (): UploadProps => {
@@ -82,6 +88,7 @@ export default class Page extends Component<CommonProps & CompressIMG.CommonProp
       return
     }
 
+    // open返回的是数组
     const savePath = files.length > 1 ? ipcRenderer.sendSync('showOpenDialog', {
       defaultPath: path.dirname(this.getFilePath(files[0])),
       properties: ['openDirectory', 'createDirectory'],
@@ -102,7 +109,7 @@ export default class Page extends Component<CommonProps & CompressIMG.CommonProp
       if (files.length > 1) {
         await Promise.all(files.map((file: UploadFile) => {
           const p = this.getFilePath(file)
-          return tinify.fromFile(p).toFile(savePath + '/' + path.basename(p))
+          return tinify.fromFile(p).toFile(savePath[0] + '/' + path.basename(p))
         }))
       } else {
         const p = this.getFilePath(files[0])
@@ -110,6 +117,11 @@ export default class Page extends Component<CommonProps & CompressIMG.CommonProp
       }
 
       message.success('压缩成功')
+      if (files.length > 1) {
+        shell.openPath(savePath[0])
+      } else {
+        shell.showItemInFolder(savePath)
+      }
     } catch(err) {
       message.error(err.message)
     }

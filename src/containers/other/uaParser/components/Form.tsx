@@ -1,6 +1,6 @@
 import React, { Component, Fragment, ReactElement } from 'react'
 import { inject, observer } from 'mobx-react'
-import { Form, Input, Descriptions, Button } from 'antd'
+import { Form, Input, Empty, Descriptions, Button } from 'antd'
 import { FormInstance } from 'antd/es/form'
 import Parser, { IResult } from 'ua-parser-js'
 
@@ -46,11 +46,16 @@ export default class PageForm extends Component<UAParser.CommonProps> {
       '设备品牌': result.device.vendor,
       'CPU架构': result.cpu.architecture,
     }
+    const keys = Object.keys(map).filter(key => !!map[key])
+
+    if (!keys.length) {
+      return <Empty description="无解析数据" />
+    }
 
     return (
       <Descriptions bordered column={1}>
         {
-          Object.keys(map).filter(key => map[key] !== undefined).map((key) => {
+          keys.map((key) => {
             return (
               <Descriptions.Item key={key} label={key}>
                 { map[key] }

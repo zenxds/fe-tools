@@ -20,6 +20,7 @@ const paths = {
 
   ocr: '/other/ocr',
   uaParser: '/other/uaParser',
+  urlParser: '/other/urlParser',
   qrcode: '/other/qrcode',
 }
 

@@ -4,9 +4,8 @@ const debug = require('debug')('electron')
 
 const config = require('./package.json').autoUpdater || {}
 
-if (process.env.ELECTRON_ENV === 'development' && config.enable) {
+if (config.enable) {
   autoUpdater.autoDownload = false
-  autoUpdater.setFeedURL(config.feedUrl)
 
   autoUpdater.on('error', function (error) {
     sendUpdateMessage('error', error)
@@ -21,17 +20,9 @@ if (process.env.ELECTRON_ENV === 'development' && config.enable) {
     sendUpdateMessage('progress', message)
   })
 
-  autoUpdater.on(
-    'update-downloaded',
-    function (event, releaseNotes, releaseName, releaseDate, updateUrl) {
-      sendUpdateMessage('downloaded', {
-        releaseNotes,
-        releaseName,
-        releaseDate,
-        updateUrl,
-      })
-    },
-  )
+  autoUpdater.on('update-downloaded', function (message) {
+    sendUpdateMessage('downloaded', message)
+  })
 
   ipcMain.on('downloadUpdate', () => {
     autoUpdater.downloadUpdate()

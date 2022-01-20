@@ -1,15 +1,15 @@
 module.exports = {
-  appId: 'com.example.app',
-  productName: 'Electron App',
+  appId: 'com.dingxiang.app',
+  productName: '前端工具箱',
   directories: {
     output: 'release',
   },
-  // "publish": [
-  //   {
-  //     "provider": "generic",
-  //     "url": "http://**.**.**.**:3002/download/",
-  //   }
-  // ],
+  publish: [
+    {
+      provider: 'generic',
+      url: 'https://fe.dingxiang-inc.com/download/fe-tools',
+    }
+  ],
   files: [
     '**/*',
     '!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}',
