@@ -3,6 +3,7 @@ import { inject, observer } from 'mobx-react'
 import { Form, Input, Space, Button, message } from 'antd'
 import { FormInstance } from 'antd/es/form'
 
+import * as unicode from '@utils/encode/unicode'
 import * as utf8 from '@utils/encode/utf8'
 import * as base64 from '@utils/encode/base64'
 import * as uri from '@utils/encode/uri'
@@ -23,7 +24,11 @@ interface EncodeObject {
 }
 
 const encodeMethods: Record<EncodeCommon.EncodeTypes, EncodeObject> = {
-  utf8,
+  utf8: {
+    encode: (str: string): string => unicode.encode(utf8.encode(str)),
+    decode: (str: string): string => utf8.decode(unicode.decode(str))
+  },
+  unicode,
   base64,
   uri,
   uriComponent

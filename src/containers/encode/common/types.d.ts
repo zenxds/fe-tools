@@ -9,7 +9,7 @@ declare namespace EncodeCommon {
     actions: Actions
   }
 
-  type EncodeTypes = 'base64' | 'utf8' | 'uri' | 'uriComponent'
+  type EncodeTypes = 'base64' | 'utf8' | 'unicode' | 'uri' | 'uriComponent'
 
   interface IParams {
     type: EncodeTypes

@@ -5,6 +5,7 @@ const paths = {
   cryptoSha1: '/crypto/sha1',
 
   encodeUtf8: '/encode/utf8',
+  encodeUnicode: '/encode/unicode',
   encodeBase64: '/encode/base64',
   encodeUri: '/encode/uri',
   encodeUriComponent: '/encode/uriComponent',

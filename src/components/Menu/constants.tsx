@@ -38,6 +38,11 @@ export const menus: MenuItem[] = [
         children: []
       },
       {
+        name: 'Unicode',
+        code: paths.encodeUnicode,
+        children: []
+      },
+      {
         name: 'UTF8',
         code: paths.encodeUtf8,
         children: []
