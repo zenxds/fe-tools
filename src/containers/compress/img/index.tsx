@@ -11,7 +11,7 @@ import { ipcRenderer, clipboard, shell } from 'electron'
 import dataURI from 'datauri'
 
 import * as decorators from '@decorators'
-import { randomStr, getClipboardFilePath } from '@utils'
+import { randomStr, getClipboardFilePath, parseDataURI } from '@utils'
 
 import SettingForm from './components/Form'
 import actions from './actions'
@@ -83,9 +83,8 @@ export default class Page extends Component<CommonProps & CompressIMG.CommonProp
     }
 
     const filePath = getClipboardFilePath()
-    const data = (filePath ? await dataURI(filePath) : img.toDataURL()) || ''
-    const match = /^data:\w+\/([\w-+.]+)(?=[;])/.exec(data.split(',')[0])
-    const ext = match ? match[1] : 'png'
+    const input = (filePath ? await dataURI(filePath) : img.toDataURL()) || ''
+    const { ext, data } = parseDataURI(input)
 
     const savePath = ipcRenderer.sendSync('showSaveDialog', {
       defaultPath: randomStr(32) + '.' + ext,
@@ -101,7 +100,7 @@ export default class Page extends Component<CommonProps & CompressIMG.CommonProp
     })
 
     try {
-      const buffer = Buffer.from(data.split(',')[1], 'base64')
+      const buffer = Buffer.from(data, 'base64')
       await tinify.fromBuffer(buffer).toFile(savePath)
 
       message.success('压缩成功')

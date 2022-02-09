@@ -6,6 +6,7 @@ import qrcode from 'qrcode'
 import fs from 'fs'
 import { clipboard, nativeImage, ipcRenderer, shell } from 'electron'
 
+import { randomStr, parseDataURI } from '@utils'
 import { formItemLayout, tailFormItemLayout } from '@constants'
 import '../less/styles.less'
 
@@ -53,16 +54,14 @@ export default class PageForm extends Component<QRCode.CommonProps> {
       return
     }
 
-    const base64Daa = result.replace(/^data:image\/png;base64,/, '')
+    const { data } = parseDataURI(result)
     const savePath = ipcRenderer.sendSync('showSaveDialog', {
-      filters: [
-        { name: 'png', extensions: ['png'] }
-      ],
+      defaultPath: randomStr(32) + '.png',
       properties: []
     })
 
     if (savePath) {
-      fs.writeFileSync(savePath, base64Daa, 'base64')
+      fs.writeFileSync(savePath, data, 'base64')
       shell.showItemInFolder(savePath)
     }
   }

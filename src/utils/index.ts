@@ -77,3 +77,20 @@ export function getClipboardFilePath(): string {
 
   return ''
 }
+
+interface ParseDataURIResult {
+  mime: string
+  ext: string
+  data: string
+}
+
+export function parseDataURI(input: string): ParseDataURIResult {
+  const match = /^data:(\w+\/[\w-+.]+)(?=[;])/.exec(input.split(',')[0])
+  const mime = match ? match[1] : 'image/png'
+
+  return {
+    mime,
+    ext: mime.split('/')[1],
+    data: input.split(',')[1],
+  }
+}

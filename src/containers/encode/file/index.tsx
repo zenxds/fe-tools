@@ -1,13 +1,14 @@
-import React, { Component, ReactElement } from 'react'
+import React, { Component, Fragment, ReactElement } from 'react'
 import { observer, inject } from 'mobx-react'
-import { Upload, Input, Spin, message } from 'antd'
+import { Upload, Input, Button, Space, Spin, message } from 'antd'
 import { InboxOutlined } from '@ant-design/icons'
 import { UploadFile, UploadProps } from 'antd/lib/upload/interface'
 
-import { clipboard } from 'electron'
+import fs from 'fs'
+import { clipboard, nativeImage, ipcRenderer, shell } from 'electron'
 import dataURI from 'datauri'
 
-import { getClipboardFilePath } from '@utils'
+import { getClipboardFilePath, randomStr, parseDataURI } from '@utils'
 import * as decorators from '@decorators'
 
 import actions from './actions'
@@ -16,11 +17,13 @@ import './less/styles.less'
 
 @decorators.provider({
   actions,
-  store
+  store,
 })
 @inject('store', 'actions', 'dataStore')
 @observer
-export default class Page extends Component<CommonProps & EncodeFile.CommonProps> {
+export default class Page extends Component<
+  CommonProps & EncodeFile.CommonProps
+> {
   getUploadProps = (): UploadProps => {
     return {
       accept: 'image/png, image/jpeg, image/jpg',
@@ -46,7 +49,13 @@ export default class Page extends Component<CommonProps & EncodeFile.CommonProps
     document.removeEventListener('paste', this.handlePaste, false)
   }
 
-  handlePaste = async(): Promise<void> => {
+  handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
+    this.props.actions.merge({
+      output: e.target.value,
+    })
+  }
+
+  handlePaste = async (): Promise<void> => {
     const filePath = getClipboardFilePath()
     if (filePath) {
       return this.transform(filePath)
@@ -58,26 +67,57 @@ export default class Page extends Component<CommonProps & EncodeFile.CommonProps
     }
 
     this.props.actions.merge({
-      output: img.toDataURL()
+      output: img.toDataURL(),
     })
   }
 
   async transform(filePath: string): Promise<void> {
     this.props.actions.merge({
-      isLoading: true
+      isLoading: true,
     })
 
     try {
       const output = await dataURI(filePath)
       this.props.actions.merge({
         output,
-        isLoading: false
+        isLoading: false,
       })
-    } catch(err) {
+    } catch (err) {
       message.error(err.message)
       this.props.actions.merge({
-        isLoading: false
+        isLoading: false,
       })
+    }
+  }
+
+  handleCopy = (): void => {
+    const { output } = this.props.store
+
+    if (!output) {
+      return
+    }
+
+    const img = nativeImage.createFromDataURL(output)
+    clipboard.writeImage(img)
+    message.success('复制成功')
+  }
+
+  handleSave = (): void => {
+    const { output } = this.props.store
+
+    if (!output) {
+      return
+    }
+
+    const { ext, data } = parseDataURI(output)
+    const savePath = ipcRenderer.sendSync('showSaveDialog', {
+      defaultPath: randomStr(32) + '.' + ext,
+      properties: [],
+    })
+
+    if (savePath) {
+      fs.writeFileSync(savePath, data, 'base64')
+      shell.showItemInFolder(savePath)
     }
   }
 
@@ -95,16 +135,34 @@ export default class Page extends Component<CommonProps & EncodeFile.CommonProps
           </Upload.Dragger>
         </Spin>
 
-        {
-          output && (
-            <div styleName="textarea">
-              <div className="ant-form-item-label">
-                <label>输出</label>
-              </div>
-              <Input.TextArea rows={6} value={output} />
+        <div styleName="section">
+          <div className="ant-form-item-label">
+            <label>输出</label>
+          </div>
+          <Input.TextArea
+            rows={6}
+            value={output}
+            onChange={this.handleChange}
+          />
+        </div>
+
+        {output && (
+          <Fragment>
+            <div styleName="section">
+              <img src={output} />
             </div>
-          )
-        }
+            <div styleName="section">
+              <Space>
+                <Button onClick={this.handleCopy} type="default">
+                  复制
+                </Button>
+                <Button onClick={this.handleSave} type="default">
+                  保存
+                </Button>
+              </Space>
+            </div>
+          </Fragment>
+        )}
       </div>
     )
   }
