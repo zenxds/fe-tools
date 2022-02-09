@@ -5,6 +5,8 @@ import { InboxOutlined, SettingOutlined } from '@ant-design/icons'
 import { UploadFile, UploadProps } from 'antd/lib/upload/interface'
 import { FormInstance } from 'antd/es/form'
 
+import { clipboard } from 'electron'
+import { getClipboardFilePath } from '@utils'
 import fs from 'fs'
 
 import * as decorators from '@decorators'
@@ -39,6 +41,47 @@ export default class Page extends Component<CommonProps & OCR.CommonProps> {
     } else {
       this.initOCR()
     }
+
+    document.addEventListener('paste', this.handlePaste, false)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('paste', this.handlePaste, false)
+  }
+
+  handlePaste = async(): Promise<void> => {
+    const filePath = getClipboardFilePath()
+    if (filePath) {
+      return this.process(filePath)
+    }
+
+    const img = clipboard.readImage()
+    if (img.isEmpty()) {
+      return
+    }
+
+    this.props.actions.merge({
+      isLoading: true
+    })
+
+    try {
+      const result = await this.ocr.parse(img.toDataURL().split(',')[1])
+      this.props.actions.merge({
+        output: result.map(item => item.text).join('\n'),
+      })
+    } catch(err) {
+      message.error(err.message)
+    }
+
+    this.props.actions.merge({
+      isLoading: false
+    })
+  }
+
+  handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
+    this.props.actions.merge({
+      output: e.target.value
+    })
   }
 
   initOCR(): void {
@@ -85,7 +128,7 @@ export default class Page extends Component<CommonProps & OCR.CommonProps> {
       beforeUpload: (): boolean => false,
       onChange: info => {
         if (info.fileList.length) {
-          this.process(info.fileList[0])
+          this.process(this.getFilePath(info.fileList[0]))
         }
       },
     }
@@ -95,13 +138,13 @@ export default class Page extends Component<CommonProps & OCR.CommonProps> {
     return file.originFileObj?.path || ''
   }
 
-  async process(file: UploadFile): Promise<void> {
+  async process(filePath: string): Promise<void> {
     this.props.actions.merge({
       isLoading: true
     })
 
     try {
-      const img = fs.readFileSync(this.getFilePath(file), 'base64')
+      const img = fs.readFileSync(filePath, 'base64')
       const result = await this.ocr.parse(img)
       this.props.actions.merge({
         output: result.map(item => item.text).join('\n'),
@@ -148,7 +191,7 @@ export default class Page extends Component<CommonProps & OCR.CommonProps> {
               <div className="ant-form-item-label">
                 <label>结果</label>
               </div>
-              <Input.TextArea rows={10} value={output} />
+              <Input.TextArea rows={10} value={output} onChange={this.handleChange} />
             </div>
           )
         }

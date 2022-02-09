@@ -1,4 +1,6 @@
 import crypto from 'crypto'
+import { clipboard } from 'electron'
+import { isMac, isWin } from './system'
 
 export * from './cfb'
 
@@ -61,4 +63,17 @@ export function camelCase(str: string, isBig?: boolean): string {
 export function stringToRegExp(str: string): RegExp {
   const match = str.match(/^\/(.*?)\/([dgimsuy]*)$/)
   return match ? new RegExp(match[1], match[2]) : new RegExp(str)
+}
+
+// https://github.com/electron/electron/issues/9035#issuecomment-722163818
+export function getClipboardFilePath(): string {
+  if (isMac) {
+    return decodeURIComponent(clipboard.read('public.file-url').replace('file://', ''))
+  }
+
+  if (isWin) {
+    return clipboard.readBuffer('FileNameW').toString('ucs2').replace(RegExp(String.fromCharCode(0), 'g'), '')
+  }
+
+  return ''
 }

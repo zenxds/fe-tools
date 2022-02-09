@@ -4,8 +4,10 @@ import { Upload, Input, Spin, message } from 'antd'
 import { InboxOutlined } from '@ant-design/icons'
 import { UploadFile, UploadProps } from 'antd/lib/upload/interface'
 
+import { clipboard } from 'electron'
 import dataURI from 'datauri'
 
+import { getClipboardFilePath } from '@utils'
 import * as decorators from '@decorators'
 
 import actions from './actions'
@@ -26,7 +28,7 @@ export default class Page extends Component<CommonProps & EncodeFile.CommonProps
       beforeUpload: (): boolean => false,
       onChange: info => {
         if (info.fileList.length) {
-          this.transform(info.fileList[0])
+          this.transform(this.getFilePath(info.fileList[0]))
         }
       },
     }
@@ -36,13 +38,37 @@ export default class Page extends Component<CommonProps & EncodeFile.CommonProps
     return file.originFileObj?.path || ''
   }
 
-  async transform(file: UploadFile): Promise<void> {
+  componentDidMount() {
+    document.addEventListener('paste', this.handlePaste, false)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('paste', this.handlePaste, false)
+  }
+
+  handlePaste = async(): Promise<void> => {
+    const filePath = getClipboardFilePath()
+    if (filePath) {
+      return this.transform(filePath)
+    }
+
+    const img = clipboard.readImage()
+    if (img.isEmpty()) {
+      return
+    }
+
+    this.props.actions.merge({
+      output: img.toDataURL()
+    })
+  }
+
+  async transform(filePath: string): Promise<void> {
     this.props.actions.merge({
       isLoading: true
     })
 
     try {
-      const output = await dataURI(this.getFilePath(file))
+      const output = await dataURI(filePath)
       this.props.actions.merge({
         output,
         isLoading: false

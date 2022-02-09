@@ -7,9 +7,11 @@ import { UploadFile, UploadProps } from 'antd/lib/upload/interface'
 import { FormInstance } from 'antd/es/form'
 
 import path from 'path'
-import { ipcRenderer, shell } from 'electron'
+import { ipcRenderer, clipboard, shell } from 'electron'
+import dataURI from 'datauri'
 
 import * as decorators from '@decorators'
+import { randomStr, getClipboardFilePath } from '@utils'
 
 import SettingForm from './components/Form'
 import actions from './actions'
@@ -65,6 +67,52 @@ export default class Page extends Component<CommonProps & CompressIMG.CommonProp
     } else {
       this.handleSetting()
     }
+
+    document.addEventListener('paste', this.handlePaste, false)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('paste', this.handlePaste, false)
+  }
+
+  handlePaste = async(): Promise<void> => {
+    const img = clipboard.readImage()
+
+    if (img.isEmpty()) {
+      return
+    }
+
+    const filePath = getClipboardFilePath()
+    const data = (filePath ? await dataURI(filePath) : img.toDataURL()) || ''
+    const match = /^data:\w+\/([\w-+.]+)(?=[;])/.exec(data.split(',')[0])
+    const ext = match ? match[1] : 'png'
+
+    const savePath = ipcRenderer.sendSync('showSaveDialog', {
+      defaultPath: randomStr(32) + '.' + ext,
+      properties: []
+    })
+
+    if (!savePath) {
+      return
+    }
+
+    this.props.actions.merge({
+      isLoading: true
+    })
+
+    try {
+      const buffer = Buffer.from(data.split(',')[1], 'base64')
+      await tinify.fromBuffer(buffer).toFile(savePath)
+
+      message.success('压缩成功')
+      shell.showItemInFolder(savePath)
+    } catch(err) {
+      message.error(err.message)
+    }
+
+    this.props.actions.merge({
+      isLoading: false
+    })
   }
 
   getUploadProps = (): UploadProps => {
