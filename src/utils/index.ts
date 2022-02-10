@@ -85,12 +85,13 @@ interface ParseDataURIResult {
 }
 
 export function parseDataURI(input: string): ParseDataURIResult {
-  const match = /^data:(\w+\/[\w-+.]+)(?=[;])/.exec(input.split(',')[0])
+  const arr = input.split(',')
+  const match = /^data:(\w+\/[\w-+.]+)(?=[;])/.exec(arr[0])
   const mime = match ? match[1] : 'image/png'
 
   return {
     mime,
     ext: mime.split('/')[1],
-    data: input.split(',')[1],
+    data: arr[1],
   }
 }
