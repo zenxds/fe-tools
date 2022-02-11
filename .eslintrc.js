@@ -12,7 +12,7 @@ module.exports = {
     es6: true,
     jest: true,
   },
-  extends: ['plugin:@typescript-eslint/recommended', 'prettier'],
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended', 'prettier'],
   plugins: ['react', '@typescript-eslint'],
   globals: {
     nodeRequire: true,
@@ -20,6 +20,12 @@ module.exports = {
     __webpack_public_path__: true,
   },
   rules: {
+    'no-empty': [
+      'error',
+      {
+        allowEmptyCatch: true,
+      },
+    ],
     '@typescript-eslint/no-unused-vars': [
       'warn',
       {

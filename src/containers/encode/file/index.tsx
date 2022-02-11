@@ -109,9 +109,9 @@ export default class Page extends Component<
       return
     }
 
-    const { ext, data } = parseDataURI(output)
+    const { subtype, data } = parseDataURI(output)
     const savePath = ipcRenderer.sendSync('showSaveDialog', {
-      defaultPath: randomStr(32) + '.' + ext,
+      defaultPath: randomStr(32) + '.' + subtype,
       properties: [],
     })
 

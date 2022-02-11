@@ -84,10 +84,10 @@ export default class Page extends Component<CommonProps & CompressIMG.CommonProp
 
     const filePath = getClipboardFilePath()
     const input = (filePath ? await dataURI(filePath) : img.toDataURL()) || ''
-    const { ext, data } = parseDataURI(input)
+    const { subtype, data } = parseDataURI(input)
 
     const savePath = ipcRenderer.sendSync('showSaveDialog', {
-      defaultPath: randomStr(32) + '.' + ext,
+      defaultPath: randomStr(32) + '.' + subtype,
       properties: []
     })
 

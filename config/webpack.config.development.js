@@ -1,4 +1,3 @@
-const fs = require('fs')
 const path = require('path')
 const webpack = require('webpack')
 const ESLintPlugin = require('eslint-webpack-plugin')
@@ -90,6 +89,7 @@ module.exports = {
   },
   plugins: [
     new ESLintPlugin({
+      context: path.resolve(__dirname, '..'),
       extensions: ['.js', '.jsx', '.ts', '.tsx'],
       failOnError: true,
     }),

@@ -80,7 +80,7 @@ export function getClipboardFilePath(): string {
 
 interface ParseDataURIResult {
   mime: string
-  ext: string
+  subtype: string
   data: string
 }
 
@@ -91,7 +91,7 @@ export function parseDataURI(input: string): ParseDataURIResult {
 
   return {
     mime,
-    ext: mime.split('/')[1],
+    subtype: mime.split('/')[1],
     data: arr[1],
   }
 }
