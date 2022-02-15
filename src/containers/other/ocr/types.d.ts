@@ -5,7 +5,7 @@ declare namespace OCR {
   type Actions = import('./actions').Actions
 
   interface CommonProps {
-    store: Store,
-    actions: Actions
+    store?: Store,
+    actions?: Actions
   }
 }

@@ -60,26 +60,26 @@ export default class Page extends Component<CommonProps & OCR.CommonProps> {
       return
     }
 
-    this.props.actions.merge({
+    this.props.actions!.merge({
       isLoading: true
     })
 
     try {
       const result = await this.ocr.parse(img.toDataURL().split(',')[1])
-      this.props.actions.merge({
+      this.props.actions!.merge({
         output: result.map(item => item.text).join('\n'),
       })
     } catch(err) {
       message.error(err.message)
     }
 
-    this.props.actions.merge({
+    this.props.actions!.merge({
       isLoading: false
     })
   }
 
   handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
-    this.props.actions.merge({
+    this.props.actions!.merge({
       output: e.target.value
     })
   }
@@ -94,7 +94,7 @@ export default class Page extends Component<CommonProps & OCR.CommonProps> {
 
 
   handleSetting = () => {
-    this.props.actions.merge({
+    this.props.actions!.merge({
       showSettingModal: true
     })
   }
@@ -109,14 +109,14 @@ export default class Page extends Component<CommonProps & OCR.CommonProps> {
       dataStore.set('ocrSecretKey', values.secretKey)
       this.initOCR()
 
-      this.props.actions.merge({
+      this.props.actions!.merge({
         showSettingModal: false
       })
     } catch(err) {}
   }
 
   handleCancelSetting = (): void => {
-    this.props.actions.merge({
+    this.props.actions!.merge({
       showSettingModal: false
     })
   }
@@ -139,37 +139,39 @@ export default class Page extends Component<CommonProps & OCR.CommonProps> {
   }
 
   async process(filePath: string): Promise<void> {
-    this.props.actions.merge({
+    const { actions } = this.props
+
+    actions!.merge({
       isLoading: true
     })
 
     try {
       const img = fs.readFileSync(filePath, 'base64')
       const result = await this.ocr.parse(img)
-      this.props.actions.merge({
+      actions!.merge({
         output: result.map(item => item.text).join('\n'),
       })
     } catch(err) {
       message.error(err.message)
     }
 
-    this.props.actions.merge({
+    actions!.merge({
       isLoading: false
     })
   }
 
   renderSettingModal(): ReactElement {
-    const { showSettingModal } = this.props.store
+    const { showSettingModal } = this.props.store!
 
     return (
       <Modal title="OCR配置" visible={showSettingModal} onCancel={this.handleCancelSetting} onOk={this.handleSettingOk}>
-        <SettingForm forwardRef={this.settingFormRef} />
+        <SettingForm dataStore={this.props.dataStore} forwardRef={this.settingFormRef} />
       </Modal>
     )
   }
 
   render(): ReactElement {
-    const { isLoading, output } = this.props.store
+    const { isLoading, output } = this.props.store!
 
     return (
       <div className="container">

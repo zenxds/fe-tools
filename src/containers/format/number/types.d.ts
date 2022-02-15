@@ -5,8 +5,8 @@ declare namespace FormatNumber {
   type Actions = import('./actions').Actions
 
   interface CommonProps {
-    store: Store,
-    actions: Actions
+    store?: Store,
+    actions?: Actions
   }
 
   type NumberType = '2' | '8' | '10' | '16'

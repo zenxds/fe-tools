@@ -50,7 +50,7 @@ export default class Page extends Component<
   }
 
   handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>): void => {
-    this.props.actions.merge({
+    this.props.actions!.merge({
       output: e.target.value,
     })
   }
@@ -66,32 +66,32 @@ export default class Page extends Component<
       return
     }
 
-    this.props.actions.merge({
+    this.props.actions!.merge({
       output: img.toDataURL(),
     })
   }
 
   async transform(filePath: string): Promise<void> {
-    this.props.actions.merge({
+    this.props.actions!.merge({
       isLoading: true,
     })
 
     try {
       const output = await dataURI(filePath)
-      this.props.actions.merge({
+      this.props.actions!.merge({
         output,
         isLoading: false,
       })
     } catch (err) {
       message.error(err.message)
-      this.props.actions.merge({
+      this.props.actions!.merge({
         isLoading: false,
       })
     }
   }
 
   handleCopy = (): void => {
-    const { output } = this.props.store
+    const { output } = this.props.store!
 
     if (!output) {
       return
@@ -103,7 +103,7 @@ export default class Page extends Component<
   }
 
   handleSave = (): void => {
-    const { output } = this.props.store
+    const { output } = this.props.store!
 
     if (!output) {
       return
@@ -122,7 +122,7 @@ export default class Page extends Component<
   }
 
   render(): ReactElement {
-    const { isLoading, output } = this.props.store
+    const { isLoading, output } = this.props.store!
 
     return (
       <div className="container">

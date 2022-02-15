@@ -5,8 +5,8 @@ declare namespace CryptoCommon {
   type Actions = import('./actions').Actions
 
   interface CommonProps {
-    store: Store,
-    actions: Actions
+    store?: Store,
+    actions?: Actions
   }
 
   type CryptoTypes = 'md5' | 'sha1'

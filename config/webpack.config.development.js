@@ -3,6 +3,7 @@ const webpack = require('webpack')
 const ESLintPlugin = require('eslint-webpack-plugin')
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 const DayjsWebpackPlugin = require('antd-dayjs-webpack-plugin')
+const nodeExternals = require('webpack-node-externals')
 
 const rules = require('./webpack.rules')
 module.exports = {
@@ -14,6 +15,8 @@ module.exports = {
   },
   target: 'electron-renderer',
   devtool: 'inline-source-map',
+  externalsPresets: { node: true },
+  externals: [nodeExternals()],
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx', '.json'],
     modules: ['node_modules', 'src'],
@@ -27,9 +30,18 @@ module.exports = {
   module: {
     rules: rules.concat([
       {
-        test: /\.(js|ts)x?$/,
+        test: /\.jsx?$/,
         use: ['babel-loader'],
         exclude: /node_modules/
+      },
+      {
+        test: /\.tsx?$/,
+        use: ['babel-loader', 'ts-loader'],
+        exclude: /node_modules|\.d\.ts$/
+      },
+      {
+        test: /\.d\.ts$/,
+        loader: 'ignore-loader'
       },
       {
         test: /\.css$/,

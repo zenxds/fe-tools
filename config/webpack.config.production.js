@@ -63,10 +63,20 @@ module.exports = {
     ],
   },
   module: {
-    rules: rules.concat([{
-        test: /\.(js|ts)x?$/,
+    rules: rules.concat([
+      {
+        test: /\.jsx?$/,
         use: ['babel-loader'],
         exclude: /node_modules/
+      },
+      {
+        test: /\.tsx?$/,
+        use: ['babel-loader', 'ts-loader'],
+        exclude: /node_modules|\.d\.ts$/
+      },
+      {
+        test: /\.d\.ts$/,
+        loader: 'ignore-loader'
       },
       {
         test: /\.css$/,

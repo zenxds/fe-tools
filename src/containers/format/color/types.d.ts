@@ -5,8 +5,8 @@ declare namespace FormatColor {
   type Actions = import('./actions').Actions
 
   interface CommonProps {
-    store: Store,
-    actions: Actions
+    store?: Store,
+    actions?: Actions
   }
 
   type ColorType = 'hex' | 'rgb' | 'hsl'

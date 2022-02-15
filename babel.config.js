@@ -9,7 +9,6 @@ module.exports = {
         modules: false,
       },
     ],
-    '@babel/preset-typescript',
     '@babel/preset-react',
   ],
   env: {

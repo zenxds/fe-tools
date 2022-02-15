@@ -5,8 +5,8 @@ declare namespace EncodeCommon {
   type Actions = import('./actions').Actions
 
   interface CommonProps {
-    store: Store,
-    actions: Actions
+    store?: Store,
+    actions?: Actions
   }
 
   type EncodeTypes = 'base64' | 'utf8' | 'unicode' | 'uri' | 'uriComponent'

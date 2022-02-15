@@ -1,7 +1,7 @@
 import React, { Component, ReactElement } from 'react'
 import { observer, inject } from 'mobx-react'
 import { Upload, Spin, Modal, message } from 'antd'
-import { debounce } from 'lodash'
+import { debounce, DebouncedFunc } from 'lodash'
 import { InboxOutlined, SettingOutlined } from '@ant-design/icons'
 import { UploadFile, UploadProps } from 'antd/lib/upload/interface'
 import { FormInstance } from 'antd/es/form'
@@ -9,6 +9,7 @@ import { FormInstance } from 'antd/es/form'
 import path from 'path'
 import { ipcRenderer, clipboard, shell } from 'electron'
 import dataURI from 'datauri'
+import tinify from 'tinify'
 
 import * as decorators from '@decorators'
 import { randomStr, getClipboardFilePath, parseDataURI } from '@utils'
@@ -18,8 +19,6 @@ import actions from './actions'
 import store from './store'
 import './less/styles.less'
 
-const tinify = nodeRequire('tinify')
-
 @decorators.provider({
   actions,
   store
@@ -28,16 +27,17 @@ const tinify = nodeRequire('tinify')
 @observer
 export default class Page extends Component<CommonProps & CompressIMG.CommonProps> {
   settingFormRef: React.RefObject<FormInstance>
+  debounceCompress: DebouncedFunc<typeof Page.prototype.compress>
 
   constructor(props: CommonProps & CompressIMG.CommonProps) {
     super(props)
 
-    this.compress = debounce(this.compress, 300)
+    this.debounceCompress = debounce(this.compress, 300)
     this.settingFormRef = React.createRef<FormInstance>()
   }
 
   handleSetting = () => {
-    this.props.actions.merge({
+    this.props.actions!.merge({
       showSettingModal: true
     })
   }
@@ -48,14 +48,14 @@ export default class Page extends Component<CommonProps & CompressIMG.CommonProp
       message.success('保存成功')
       tinify.key = values.apiKey
       this.props.dataStore.set('tinifyKey', values.apiKey)
-      this.props.actions.merge({
+      this.props.actions!.merge({
         showSettingModal: false
       })
     } catch(err) {}
   }
 
   handleCancelSetting = (): void => {
-    this.props.actions.merge({
+    this.props.actions!.merge({
       showSettingModal: false
     })
   }
@@ -95,7 +95,7 @@ export default class Page extends Component<CommonProps & CompressIMG.CommonProp
       return
     }
 
-    this.props.actions.merge({
+    this.props.actions!.merge({
       isLoading: true
     })
 
@@ -109,7 +109,7 @@ export default class Page extends Component<CommonProps & CompressIMG.CommonProp
       message.error(err.message)
     }
 
-    this.props.actions.merge({
+    this.props.actions!.merge({
       isLoading: false
     })
   }
@@ -121,7 +121,7 @@ export default class Page extends Component<CommonProps & CompressIMG.CommonProp
       fileList: [],
       beforeUpload: (): boolean => false,
       onChange: info => {
-        this.compress(info.fileList)
+        this.debounceCompress(info.fileList)
       },
     }
   }
@@ -148,7 +148,7 @@ export default class Page extends Component<CommonProps & CompressIMG.CommonProp
       return
     }
 
-    this.props.actions.merge({
+    this.props.actions!.merge({
       isLoading: true
     })
 
@@ -173,23 +173,23 @@ export default class Page extends Component<CommonProps & CompressIMG.CommonProp
       message.error(err.message)
     }
 
-    this.props.actions.merge({
+    this.props.actions!.merge({
       isLoading: false
     })
   }
 
   renderSettingModal(): ReactElement {
-    const { showSettingModal } = this.props.store
+    const { showSettingModal } = this.props.store!
 
     return (
       <Modal title="压缩配置" visible={showSettingModal} onCancel={this.handleCancelSetting} onOk={this.handleSettingOk}>
-        <SettingForm forwardRef={this.settingFormRef} />
+        <SettingForm dataStore={this.props.dataStore} forwardRef={this.settingFormRef} />
       </Modal>
     )
   }
 
   render(): ReactElement {
-    const { isLoading } = this.props.store
+    const { isLoading } = this.props.store!
 
     return (
       <div className="container">
