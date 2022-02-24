@@ -25,6 +25,7 @@ export default class PageForm extends Component<FormatVarName.CommonProps> {
         upperCamel: camelCase(input, true),
         underscored: underscored(input),
         hyphened: hyphened(input),
+        constant: underscored(input).toUpperCase(),
       })
     } catch(err) {
       message.error(err.message)
@@ -51,6 +52,10 @@ export default class PageForm extends Component<FormatVarName.CommonProps> {
         </Form.Item>
 
         <Form.Item label="连字符" name="hyphened">
+          <Input />
+        </Form.Item>
+
+        <Form.Item label="常量" name="constant">
           <Input />
         </Form.Item>
 

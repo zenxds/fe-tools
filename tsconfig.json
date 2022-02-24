@@ -2,10 +2,10 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "outDir": "./dist",
-    "module": "commonjs",
+    "module": "esnext",
     "moduleResolution": "node",
     "target": "es2017",
-    "jsx": "react",
+    "jsx": "preserve",
     "allowJs": true,
     "sourceMap": true,
     "strictNullChecks": true,
