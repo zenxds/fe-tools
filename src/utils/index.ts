@@ -53,7 +53,7 @@ export function hyphened(str: string): string {
 }
 
 export function camelCase(str: string, isBig?: boolean): string {
-  const ret = str.replace(/[-_][^-_]/g, function(match) {
+  const ret = underscored(str).replace(/[-_][^-_]/g, function(match) {
     return match.charAt(1).toUpperCase()
   })
 
