@@ -10,6 +10,7 @@ const paths = {
   encodeUri: '/encode/uri',
   encodeUriComponent: '/encode/uriComponent',
   encodeFile: '/encode/file',
+  encodeBuffer: '/encode/buffer',
 
   randomStr: '/random/str',
   randomNumber: '/random/number',

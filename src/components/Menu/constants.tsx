@@ -52,6 +52,11 @@ export const menus: MenuItem[] = [
         code: paths.encodeFile,
         children: []
       },
+      {
+        name: 'Buffer',
+        code: paths.encodeBuffer,
+        children: []
+      }
     ]
   },
   {

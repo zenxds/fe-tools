@@ -6,6 +6,7 @@ import { FormInstance } from 'antd/es/form'
 import * as unicode from '@utils/encode/unicode'
 import * as utf8 from '@utils/encode/utf8'
 import * as base64 from '@utils/encode/base64'
+import * as buffer from '@utils/encode/buffer'
 import * as uri from '@utils/encode/uri'
 import * as uriComponent from '@utils/encode/uriComponent'
 import { formItemLayout, tailFormItemLayout } from '@constants'
@@ -31,6 +32,7 @@ const encodeMethods: Record<EncodeCommon.EncodeTypes, EncodeObject> = {
   unicode,
   base64,
   uri,
+  buffer,
   uriComponent
 }
 
@@ -72,7 +74,7 @@ export default class PageForm extends Component<EncodeCommon.CommonProps & Encod
   render(): ReactElement {
     return (
       <Form ref={this.formRef} {...formItemLayout} onFinish={this.handleFinish}>
-        <Form.Item label="字符串" name="input" rules={[{ required: true }]}>
+        <Form.Item label="输入" name="input" rules={[{ required: true }]}>
           <Input.TextArea rows={3} />
         </Form.Item>
 
