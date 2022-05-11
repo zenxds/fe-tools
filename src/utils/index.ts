@@ -1,5 +1,6 @@
 import crypto from 'crypto'
 import { clipboard } from 'electron'
+import mime from 'mime'
 import { isMac, isWin } from './system'
 
 export * from './cfb'
@@ -80,18 +81,19 @@ export function getClipboardFilePath(): string {
 
 interface ParseDataURIResult {
   mime: string
-  subtype: string
+  ext: string
   data: string
 }
 
 export function parseDataURI(input: string): ParseDataURIResult {
   const arr = input.split(',')
   const match = /^data:(\w+\/[\w-+.]+)(?=[;])/.exec(arr[0])
-  const mime = match ? match[1] : 'image/png'
+  const type = match ? match[1] : 'image/png'
+
 
   return {
-    mime,
-    subtype: mime.split('/')[1],
+    mime: type,
+    ext: mime.getExtension(type) || '',
     data: arr[1],
   }
 }

@@ -55,6 +55,7 @@
     "@types/jest": "^27.4.0",
     "@types/loadable__component": "^5.13.4",
     "@types/lodash": "^4.14.178",
+    "@types/mime": "^2.0.3",
     "@types/node": "^17.0.8",
     "@types/qrcode": "^1.4.2",
     "@types/react": "^17.0.1",
@@ -114,6 +115,7 @@
   "dependencies": {
     "datauri": "^4.1.0",
     "electron-updater": "^4.3.5",
+    "mime": "^3.0.0",
     "randexp": "^0.5.3",
     "tencentcloud-sdk-nodejs-ocr": "^4.0.275",
     "tinify": "^1.6.1",

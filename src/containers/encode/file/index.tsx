@@ -7,6 +7,7 @@ import { UploadFile, UploadProps } from 'antd/lib/upload/interface'
 import fs from 'fs'
 import { clipboard, nativeImage, ipcRenderer, shell } from 'electron'
 import dataURI from 'datauri'
+import DatauriParser from 'datauri/parser'
 
 import { getClipboardFilePath, randomStr, parseDataURI } from '@utils'
 import * as decorators from '@decorators'
@@ -26,7 +27,7 @@ export default class Page extends Component<
 > {
   getUploadProps = (): UploadProps => {
     return {
-      accept: 'image/png, image/jpeg, image/jpg',
+      accept: 'image/*',
       fileList: [],
       beforeUpload: (): boolean => false,
       onChange: info => {
@@ -62,13 +63,20 @@ export default class Page extends Component<
     }
 
     const img = clipboard.readImage()
-    if (img.isEmpty()) {
+    if (!img.isEmpty()) {
+      this.props.actions!.merge({
+        output: img.toDataURL(),
+      })
       return
     }
 
-    this.props.actions!.merge({
-      output: img.toDataURL(),
-    })
+    const text = clipboard.readText()
+    if (/^<svg/.test(text)) {
+      const parser = new DatauriParser()
+      this.props.actions!.merge({
+        output: parser.format('.svg', Buffer.from(text)).content,
+      })
+    }
   }
 
   async transform(filePath: string): Promise<void> {
@@ -109,9 +117,9 @@ export default class Page extends Component<
       return
     }
 
-    const { subtype, data } = parseDataURI(output)
+    const { ext, data } = parseDataURI(output)
     const savePath = ipcRenderer.sendSync('showSaveDialog', {
-      defaultPath: randomStr(32) + '.' + subtype,
+      defaultPath: randomStr(32) + '.' + ext,
       properties: [],
     })
 
