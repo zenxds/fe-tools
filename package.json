@@ -113,6 +113,7 @@
     "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
+    "canvg": "^4.0.0",
     "datauri": "^4.1.0",
     "electron-updater": "^4.3.5",
     "mime": "^3.0.0",

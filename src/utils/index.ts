@@ -1,6 +1,7 @@
 import crypto from 'crypto'
 import { clipboard } from 'electron'
 import mime from 'mime'
+import { Canvg } from 'canvg'
 import { isMac, isWin } from './system'
 
 export * from './cfb'
@@ -43,7 +44,10 @@ export function md5(str: string): string {
 }
 
 export function underscored(str: string): string {
-  return str.replace(/([a-z\d])([A-Z])/g, '$1_$2').replace(/-/g, '_').toLowerCase()
+  return str
+    .replace(/([a-z\d])([A-Z])/g, '$1_$2')
+    .replace(/-/g, '_')
+    .toLowerCase()
 }
 
 export function hyphened(str: string): string {
@@ -54,11 +58,14 @@ export function hyphened(str: string): string {
 }
 
 export function camelCase(str: string, isBig?: boolean): string {
-  const ret = underscored(str).replace(/[-_][^-_]/g, function(match) {
+  const ret = underscored(str).replace(/[-_][^-_]/g, function (match) {
     return match.charAt(1).toUpperCase()
   })
 
-  return (isBig ? ret.charAt(0).toUpperCase() : ret.charAt(0).toLowerCase()) + ret.slice(1)
+  return (
+    (isBig ? ret.charAt(0).toUpperCase() : ret.charAt(0).toLowerCase()) +
+    ret.slice(1)
+  )
 }
 
 export function stringToRegExp(str: string): RegExp {
@@ -69,11 +76,16 @@ export function stringToRegExp(str: string): RegExp {
 // https://github.com/electron/electron/issues/9035#issuecomment-722163818
 export function getClipboardFilePath(): string {
   if (isMac) {
-    return decodeURIComponent(clipboard.read('public.file-url').replace('file://', ''))
+    return decodeURIComponent(
+      clipboard.read('public.file-url').replace('file://', ''),
+    )
   }
 
   if (isWin) {
-    return clipboard.readBuffer('FileNameW').toString('ucs2').replace(RegExp(String.fromCharCode(0), 'g'), '')
+    return clipboard
+      .readBuffer('FileNameW')
+      .toString('ucs2')
+      .replace(RegExp(String.fromCharCode(0), 'g'), '')
   }
 
   return ''
@@ -87,13 +99,25 @@ interface ParseDataURIResult {
 
 export function parseDataURI(input: string): ParseDataURIResult {
   const arr = input.split(',')
-  const match = /^data:(\w+\/[\w-+.]+)(?=[;])/.exec(arr[0])
+  // /^data:(\w+\/[\w-+.]+)(;charset=[\w-]+|;base64){0,1},(.*)/
+  const match = /^data:(\w+\/[\w-+.]+)(;charset=[\w-]+|;base64){0,1},/.exec(arr[0] + ',')
   const type = match ? match[1] : 'image/png'
-
 
   return {
     mime: type,
     ext: mime.getExtension(type) || '',
     data: arr[1],
   }
+}
+
+export function toPNG(str: string): string {
+  const canvas = document.createElement('canvas')
+  const ctx = canvas.getContext('2d')
+
+  if (ctx) {
+    const v = Canvg.fromString(ctx, str)
+    v.start()
+  }
+
+  return canvas.toDataURL('img/png')
 }

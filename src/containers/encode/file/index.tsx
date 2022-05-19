@@ -5,11 +5,13 @@ import { InboxOutlined } from '@ant-design/icons'
 import { UploadFile, UploadProps } from 'antd/lib/upload/interface'
 
 import fs from 'fs'
+import path from 'path'
 import { clipboard, nativeImage, ipcRenderer, shell } from 'electron'
 import dataURI from 'datauri'
-import DatauriParser from 'datauri/parser'
+// import DatauriParser from 'datauri/parser'
 
-import { getClipboardFilePath, randomStr, parseDataURI } from '@utils'
+import { getClipboardFilePath, randomStr, parseDataURI, toPNG } from '@utils'
+import { encodeSVG, decodeSVG } from '@utils/encode/base64'
 import * as decorators from '@decorators'
 
 import actions from './actions'
@@ -71,15 +73,30 @@ export default class Page extends Component<
     }
 
     const text = clipboard.readText()
-    if (/^<svg/.test(text)) {
-      const parser = new DatauriParser()
-      this.props.actions!.merge({
-        output: parser.format('.svg', Buffer.from(text)).content,
-      })
+    if (/<svg/.test(text)) {
+      this.handleSVG(text)
     }
   }
 
+  handleSVG = (text: string): void => {
+    // const svg = text.indexOf('xmlns') > -1 ? text : text.replace(/<svg/, '<svg xmlns="http://www.w3.org/2000/svg"')
+    // const parser = new DatauriParser()
+    // this.props.actions!.merge({
+    //   output: parser.format('.svg', Buffer.from(svg)).content,
+    // })
+
+    this.props.actions!.merge({
+      output: encodeSVG(text),
+    })
+  }
+
   async transform(filePath: string): Promise<void> {
+    if (path.extname(filePath) === '.svg') {
+      const text = fs.readFileSync(filePath, 'utf8')
+      this.handleSVG(text)
+      return
+    }
+
     this.props.actions!.merge({
       isLoading: true,
     })
@@ -110,6 +127,19 @@ export default class Page extends Component<
     message.success('复制成功')
   }
 
+  handleCopyPNG = (): void => {
+    const { output } = this.props.store!
+
+    if (!output) {
+      return
+    }
+
+    const { data } = parseDataURI(output)
+    const img = nativeImage.createFromDataURL(toPNG(decodeSVG(data)))
+    clipboard.writeImage(img)
+    message.success('复制成功')
+  }
+
   handleSave = (): void => {
     const { output } = this.props.store!
 
@@ -124,7 +154,11 @@ export default class Page extends Component<
     })
 
     if (savePath) {
-      fs.writeFileSync(savePath, data, 'base64')
+      if (ext === 'svg') {
+        fs.writeFileSync(savePath, decodeSVG(data), 'utf8')
+      } else {
+        fs.writeFileSync(savePath, data, 'base64')
+      }
       shell.showItemInFolder(savePath)
     }
   }
@@ -164,6 +198,13 @@ export default class Page extends Component<
                 <Button onClick={this.handleCopy} type="default">
                   复制
                 </Button>
+                {
+                  /image\/svg/.test(output) ? (
+                    <Button onClick={this.handleCopyPNG} type="default">
+                      复制为PNG
+                    </Button>
+                  ) : null
+                }
                 <Button onClick={this.handleSave} type="default">
                   保存
                 </Button>
