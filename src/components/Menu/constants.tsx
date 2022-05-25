@@ -27,16 +27,17 @@ export const menus: MenuItem[] = [
         code: paths.encodeBase64,
         children: []
       },
-      {
-        name: 'URI',
-        code: paths.encodeUri,
-        children: []
-      },
-      {
-        name: 'URIComponent',
-        code: paths.encodeUriComponent,
-        children: []
-      },
+      // 不常用
+      // {
+      //   name: 'URI',
+      //   code: paths.encodeUri,
+      //   children: []
+      // },
+      // {
+      //   name: 'URIComponent',
+      //   code: paths.encodeUriComponent,
+      //   children: []
+      // },
       {
         name: 'Unicode',
         code: paths.encodeUnicode,
