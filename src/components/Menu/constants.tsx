@@ -141,6 +141,11 @@ export const menus: MenuItem[] = [
         name: '二维码生成',
         code: paths.qrcode,
         children: []
+      },
+      {
+        name: '测试连接',
+        code: paths.connectTest,
+        children: []
       }
     ]
   }

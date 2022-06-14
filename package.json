@@ -113,11 +113,15 @@
     "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
+    "axios": "^0.27.2",
     "canvg": "^4.0.0",
     "datauri": "^4.1.0",
     "electron-updater": "^4.3.5",
+    "http-proxy-agent": "^5.0.0",
+    "https-proxy-agent": "^5.0.1",
     "mime": "^3.0.0",
     "randexp": "^0.5.3",
+    "socks-proxy-agent": "^7.0.0",
     "tencentcloud-sdk-nodejs-ocr": "^4.0.275",
     "tinify": "^1.6.1",
     "tslib": "^2.3.1"

@@ -24,6 +24,7 @@ const paths = {
   uaParser: '/other/uaParser',
   urlParser: '/other/urlParser',
   qrcode: '/other/qrcode',
+  connectTest: '/other/connectTest',
 }
 
 export const commonPaths = {

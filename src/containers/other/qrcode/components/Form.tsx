@@ -71,7 +71,7 @@ export default class PageForm extends Component<QRCode.CommonProps> {
     return (
       <Fragment>
         <Form ref={this.formRef} {...formItemLayout} initialValues={{ margin: 2 }}  onFinish={this.handleFinish}>
-          <Form.Item label="网址" name="input" rules={[{ required: true }]}>
+          <Form.Item label="输入" name="input" rules={[{ required: true }]}>
             <Input.TextArea rows={5} />
           </Form.Item>
 
