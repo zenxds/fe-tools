@@ -6,10 +6,12 @@ import {
   Radio,
   Space,
   Button,
+  Table,
   Descriptions,
   RadioChangeEvent,
 } from 'antd'
 import { FormInstance } from 'antd/es/form'
+import { ColumnsType } from 'antd/lib/table'
 
 import {
   testProxy,
@@ -101,10 +103,43 @@ export default class PageForm extends Component<ConnectTest.CommonProps> {
   }
 
   renderResults(): ReactElement | null {
-    const { results } = this.state
+    const { results, type } = this.state
 
     if (!results.length) {
       return null
+    }
+
+    if (type === 'dns') {
+      const columns: ColumnsType<TestResult> = [
+        {
+          title: 'DNS',
+          dataIndex: 'dns',
+        },
+        {
+          title: 'IP',
+          dataIndex: 'hostname',
+        },
+        {
+          title: '结果',
+          dataIndex: 'error',
+          render: (val, record) => {
+            if (record.error) {
+              return <span styleName="danger">{record.error}</span>
+            }
+
+            return <span styleName="success">{formatTime(record.time)}</span>
+          }
+        }
+      ]
+
+      return (
+        <Table
+          bordered
+          rowKey={item => `${item.dns || item.hostname}:${item.port}`}
+          columns={columns}
+          dataSource={results}
+        />
+      )
     }
 
     return (
@@ -114,7 +149,7 @@ export default class PageForm extends Component<ConnectTest.CommonProps> {
             <Descriptions.Item
               key={`${item.dns || item.hostname}:${item.port}`}
               label={
-                item.dns ? `${item.dns}(${item.hostname})` : ` ${item.hostname}:${item.port}`
+                item.dns ? `${item.dns} 解析结果为 ${item.hostname}` : ` ${item.hostname}:${item.port}`
               }
             >
               {item.error ? (

@@ -110,7 +110,8 @@ module.exports = {
             options: {
               lessOptions: {
                 math: 'always',
-                relativeUrls: false
+                relativeUrls: false,
+                javascriptEnabled: true
               }
             }
           }
