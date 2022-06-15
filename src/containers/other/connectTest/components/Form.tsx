@@ -173,7 +173,7 @@ export default class PageForm extends Component<ConnectTest.CommonProps> {
         <Form
           ref={this.formRef}
           {...formItemLayout}
-          initialValues={{ type: 'connect' }}
+          initialValues={{ type: 'connect', proxy: 'socks://127.0.0.1:1113' }}
           onFinish={this.handleFinish}
         >
           <Form.Item label="类型" name="type" rules={[{ required: true }]}>

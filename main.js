@@ -21,21 +21,17 @@ function createWindow() {
     },
   })
 
-  // and load the index.html of the app.
-  if (process.env.ELECTRON_ENV == 'development') {
-    mainWindow.loadURL(
-      'http://0.0.0.0:' + (process.env.WEBPACK_PORT | 9005) + '/index.html',
-    )
-  } else {
-    mainWindow.loadFile('index.html')
-  }
-
+  mainWindow.loadFile('index.html')
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 }
 
+function getMainWindow() {
+  return BrowserWindow.getAllWindows()[0]
+}
+
 function toggleWindow() {
-  const mainWindow = BrowserWindow.getAllWindows()[0]
+  const mainWindow = getMainWindow()
   if (!mainWindow) {
     return
   }
@@ -51,6 +47,17 @@ function createTray() {
   tray = new Tray(path.join(__dirname, 'icons/png/16x16.png'))
 
   tray.on('click', toggleWindow)
+}
+
+async function setProxy(proxy) {
+  const mainWindow = getMainWindow()
+  if (!mainWindow) {
+    return
+  }
+
+  await mainWindow.webContents.session.setProxy(proxy ? {
+    proxyRules: proxy,
+  } : {})
 }
 
 app.whenReady().then(() => {
@@ -77,6 +84,11 @@ app.whenReady().then(() => {
 
   ipcMain.on('showOpenDialog', (event, arg) => {
     event.returnValue = dialog.showOpenDialogSync(arg)
+  })
+
+  ipcMain.on('setProxy', async(event, arg) => {
+    await setProxy(arg)
+    event.reply('proxyChanged')
   })
 })
 

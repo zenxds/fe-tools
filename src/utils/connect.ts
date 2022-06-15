@@ -1,11 +1,8 @@
 import net from 'net'
-import http from 'http'
-import https from 'https'
 import url from 'url'
 import { exec } from 'child_process'
-import { HttpProxyAgent } from 'http-proxy-agent'
-import { HttpsProxyAgent } from 'https-proxy-agent'
-import { SocksProxyAgent } from 'socks-proxy-agent'
+import { ipcRenderer } from 'electron'
+import axios from 'axios'
 
 const TEST_TIMEOUT = 3000
 
@@ -146,29 +143,13 @@ export async function testConnect(server: Server): Promise<TestResult> {
   })
 }
 
-function getAgent(proxy: string, target: string): SocksProxyAgent | HttpsProxyAgent | HttpProxyAgent {
-  const proxyServer = url.parse(proxy)
+async function setProxy(proxy: string): Promise<void> {
+  ipcRenderer.send('setProxy', proxy)
 
-  if (/socks/.test(proxy)) {
-    return new SocksProxyAgent({
-      hostname: proxyServer.hostname,
-      port: proxyServer.port,
-      timeout: TEST_TIMEOUT,
+  return new Promise(resolve => {
+    ipcRenderer.once('proxyChanged', () => {
+      resolve()
     })
-  }
-
-  if (/https/.test(target)) {
-    return new HttpsProxyAgent({
-      hostname: proxyServer.hostname,
-      port: proxyServer.port,
-      timeout: TEST_TIMEOUT,
-    })
-  }
-
-  return new HttpProxyAgent({
-    hostname: proxyServer.hostname,
-    port: proxyServer.port,
-    timeout: TEST_TIMEOUT,
   })
 }
 
@@ -176,61 +157,25 @@ export async function testProxy(
   server: Server,
   proxy: string,
 ): Promise<TestResult> {
-  const agent = getAgent(proxy, server.url)
+  await setProxy(proxy)
 
-  return new Promise(resolve => {
-    const start = Date.now()
-    const ret: TestResult = {
-      hostname: server.hostname,
-      port: server.port,
-    }
+  const start = Date.now()
+  const ret: TestResult = {
+    hostname: server.hostname,
+    port: server.port,
+  }
 
-    const callback = (res: http.IncomingMessage) => {
-      const { statusCode } = res
-
-      if (!statusCode || statusCode >= 400) {
-        ret.error = `statusCode: ${statusCode}`
-      } else {
-        ret.time = Date.now() - start
-      }
-
-      resolve(ret)
-      res.destroy()
-    }
-
-    agent.on('timeout', () => {
-      ret.error = 'proxy timeout'
-      resolve(ret)
+  try {
+    await axios.get(server.url, {
+      timeout: TEST_TIMEOUT,
     })
+    ret.time = Date.now() - start
+  } catch (err) {
+    ret.error = `${err.message}`
+  }
 
-    if (/https/.test(server.url)) {
-      https
-        .get(
-          server.url,
-          {
-            agent,
-          },
-          callback,
-        )
-        .on('error', err => {
-          ret.error = err.message || 'error'
-          resolve(ret)
-        })
-    } else {
-      http
-        .get(
-          server.url,
-          {
-            agent,
-          },
-          callback,
-        )
-        .on('error', () => {
-          ret.error = 'error'
-          resolve(ret)
-        })
-    }
-  })
+  await setProxy('')
+  return ret
 }
 
 export async function resolveDNS(
