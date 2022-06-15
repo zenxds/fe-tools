@@ -9,12 +9,18 @@
   }
 
   #app {
-    .ant-layout-content {
-      background: #fff;
+    .ant-layout-has-sider {
+      height: 100%;
     }
 
-    & > .ant-layout-has-sider {
-      min-height: 100%;
+    .ant-layout-content,
+    .ant-layout-sider {
+      height: 100%;
+      overflow: auto;
+    }
+
+    .ant-layout-content {
+      background: #fff;
     }
   }
 
