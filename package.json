@@ -117,6 +117,7 @@
     "canvg": "^4.0.0",
     "datauri": "^4.1.0",
     "electron-updater": "^4.3.5",
+    "jimp": "^0.16.1",
     "mime": "^3.0.0",
     "randexp": "^0.5.3",
     "tencentcloud-sdk-nodejs-ocr": "^4.0.275",

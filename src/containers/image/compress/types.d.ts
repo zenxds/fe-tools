@@ -1,4 +1,4 @@
-declare namespace CompressIMG {
+declare namespace ImageCompress {
   /** mobx */
 
   type Store = import('./store').Store

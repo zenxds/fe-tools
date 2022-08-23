@@ -25,11 +25,11 @@ import './less/styles.less'
 })
 @inject('store', 'actions', 'dataStore')
 @observer
-export default class Page extends Component<CommonProps & CompressIMG.CommonProps> {
+export default class Page extends Component<CommonProps & ImageCompress.CommonProps> {
   settingFormRef: React.RefObject<FormInstance>
   debounceCompress: DebouncedFunc<typeof Page.prototype.compress>
 
-  constructor(props: CommonProps & CompressIMG.CommonProps) {
+  constructor(props: CommonProps & ImageCompress.CommonProps) {
     super(props)
 
     this.debounceCompress = debounce(this.compress, 300)

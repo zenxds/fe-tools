@@ -11,7 +11,7 @@ interface IProps {
 
 @inject('store', 'actions', 'dataStore')
 @observer
-export default class PageForm extends Component<CommonProps & CompressIMG.CommonProps & IProps> {
+export default class PageForm extends Component<CommonProps & ImageCompress.CommonProps & IProps> {
   render(): ReactElement {
     const { dataStore } = this.props
     return (

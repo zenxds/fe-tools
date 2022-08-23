@@ -1,5 +1,6 @@
 const paths = {
-  compressImage: '/compress/image',
+  imageCompress: '/image/compress',
+  imageSlice: '/image/slice',
 
   cryptoMd5: '/crypto/md5',
   cryptoSha1: '/crypto/sha1',

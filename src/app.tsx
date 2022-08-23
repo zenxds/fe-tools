@@ -36,7 +36,9 @@ export default class App extends Component {
           </Layout.Sider>
           <Layout.Content>
             <Switch>
-              <Route path={paths.compressImage} exact component={load('compress/img')} />
+              <Route path={paths.imageCompress} exact component={load('image/compress')} />
+              <Route path={paths.imageSlice} exact component={load('image/slice')} />
+
               <Route path={paths.randomStr} exact component={load('random/str')} />
               <Route path={paths.randomNumber} exact component={load('random/number')} />
               <Route path={commonPaths.crypto} exact component={load('crypto/common')} />
@@ -56,7 +58,7 @@ export default class App extends Component {
               <Route path={paths.connectTest} exact component={load('other/connectTest')} />
 
               <Route path="/" exact>
-                <Redirect to={paths.compressImage} />
+                <Redirect to={paths.imageCompress} />
               </Route>
             </Switch>
           </Layout.Content>

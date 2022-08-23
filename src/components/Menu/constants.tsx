@@ -8,12 +8,17 @@ export interface MenuItem {
 
 export const menus: MenuItem[] = [
   {
-    name: '压缩',
-    code: 'compress',
+    name: '图片',
+    code: 'image',
     children: [
       {
-        name: '图片',
-        code: paths.compressImage,
+        name: '压缩',
+        code: paths.imageCompress,
+        children: []
+      },
+      {
+        name: '裁切',
+        code: paths.imageSlice,
         children: []
       }
     ]
