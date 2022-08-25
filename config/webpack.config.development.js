@@ -124,11 +124,13 @@ module.exports = {
       }
     ],
     client: {
+      webSocketURL: 'ws://0.0.0.0:9005/ws',
       overlay: {
         errors: true,
         warnings: false,
       },
     },
+    port: 9005,
     hot: true,
     historyApiFallback: true,
     host: '0.0.0.0',

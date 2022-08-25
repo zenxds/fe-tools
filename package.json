@@ -6,7 +6,7 @@
   "scripts": {
     "start": "concurrently \"npm run build:dev\" \"npm run start:dev\"",
     "start:dev": "cross-env ELECTRON_ENV=development DEBUG=electron WEBPACK_PORT=9005 electron .",
-    "build:dev": "cross-env BABEL_ENV=development webpack server --hot --port 9005 --env env=development",
+    "build:dev": "cross-env BABEL_ENV=development webpack server --env env=development",
     "build:prod": "cross-env BABEL_ENV=production webpack --progress --env env=production",
     "icons": "electron-icon-builder --input=./src/icon.png --output=.",
     "pack:dev": "electron-builder --dir --config electron-builder.js",

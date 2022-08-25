@@ -148,6 +148,11 @@ export const menus: MenuItem[] = [
         children: []
       },
       {
+        name: '文件下载',
+        code: paths.download,
+        children: []
+      },
+      {
         name: '测试连接',
         code: paths.connectTest,
         children: []

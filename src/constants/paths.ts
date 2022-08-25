@@ -26,6 +26,7 @@ const paths = {
   urlParser: '/other/urlParser',
   qrcode: '/other/qrcode',
   connectTest: '/other/connectTest',
+  download: '/other/download'
 }
 
 export const commonPaths = {

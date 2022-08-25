@@ -55,6 +55,7 @@ export default class App extends Component {
               <Route path={paths.uaParser} exact component={load('other/uaParser')} />
               <Route path={paths.urlParser} exact component={load('other/urlParser')} />
               <Route path={paths.qrcode} exact component={load('other/qrcode')} />
+              <Route path={paths.download} exact component={load('other/download')} />
               <Route path={paths.connectTest} exact component={load('other/connectTest')} />
 
               <Route path="/" exact>

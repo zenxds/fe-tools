@@ -8,6 +8,7 @@ import Jimp from 'jimp'
 
 import path from 'path'
 import { ipcRenderer, shell } from 'electron'
+import { parsePath } from '@utils'
 
 import * as decorators from '@decorators'
 
@@ -56,10 +57,9 @@ export default class Page extends Component<
 
     const file = files[0]
     const filePath = this.getFilePath(file)
-    const ext = path.extname(filePath)
-    const fileName = path.basename(filePath, ext)
+    const { extname, filename, dirname } = parsePath(filePath)
     const savePath = ipcRenderer.sendSync('showOpenDialog', {
-      defaultPath: path.dirname(filePath),
+      defaultPath: dirname,
       properties: ['openDirectory', 'createDirectory'],
     })[0]
 
@@ -94,7 +94,7 @@ export default class Page extends Component<
         await image
           .clone()
           .crop(0, height - remain, width, currentHeight)
-          .writeAsync(path.join(savePath, `${fileName}-${i}${ext}`))
+          .writeAsync(path.join(savePath, `${filename}-${i}${extname}`))
         i = i + 1
         remain = remain - currentHeight
       }

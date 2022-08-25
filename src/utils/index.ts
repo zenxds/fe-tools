@@ -1,3 +1,5 @@
+import fs from 'fs'
+import path from 'path'
 import crypto from 'crypto'
 import { clipboard } from 'electron'
 import mime from 'mime'
@@ -41,6 +43,23 @@ export function md5(str: string): string {
   const hash = crypto.createHash('md5')
   hash.update(str)
   return hash.digest('hex')
+}
+
+export function md5File(p: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const output = crypto.createHash('md5')
+    const input = fs.createReadStream(p)
+
+    input.on('error', err => {
+      reject(err)
+    })
+
+    output.once('readable', () => {
+      resolve(output.read().toString('hex'))
+    })
+
+    input.pipe(output)
+  })
 }
 
 export function underscored(str: string): string {
@@ -100,7 +119,9 @@ interface ParseDataURIResult {
 export function parseDataURI(input: string): ParseDataURIResult {
   const arr = input.split(',')
   // /^data:(\w+\/[\w-+.]+)(;charset=[\w-]+|;base64){0,1},(.*)/
-  const match = /^data:(\w+\/[\w-+.]+)(;charset=[\w-]+|;base64){0,1},/.exec(arr[0] + ',')
+  const match = /^data:(\w+\/[\w-+.]+)(;charset=[\w-]+|;base64){0,1},/.exec(
+    arr[0] + ',',
+  )
   const type = match ? match[1] : 'image/png'
 
   return {
@@ -120,4 +141,39 @@ export function toPNG(str: string): string {
   }
 
   return canvas.toDataURL('img/png')
+}
+
+interface ParsePathResult {
+  dirname: string
+  basename: string
+  extname: string
+  filename: string
+}
+
+export const parsePath = (url: string): ParsePathResult => {
+  // 支持url链接
+  const input = url ? url.split('?')[0] : ''
+  const extname = path.extname(input)
+
+  return {
+    dirname: path.dirname(input),
+    basename: path.basename(input),
+    extname,
+    filename: path.basename(input, extname),
+  }
+}
+
+export const substitute = (
+  str = '',
+  o: Record<string, number | string>,
+): string => {
+  return str.replace(
+    /\\?\{\{\s*([^{}\s]+)\s*\}\}/g,
+    function (match, name): string {
+      if (match.charAt(0) === '\\') {
+        return match.slice(1)
+      }
+      return o[name] == null ? '' : `${o[name]}`
+    },
+  )
 }
