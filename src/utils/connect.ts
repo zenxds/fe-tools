@@ -1,8 +1,10 @@
 import net from 'net'
 import url from 'url'
 import { exec } from 'child_process'
-import { ipcRenderer } from 'electron'
 import axios from 'axios'
+
+import { parseLines } from './parse'
+import { setProxy } from './electron'
 
 const TEST_TIMEOUT = 3000
 
@@ -27,18 +29,6 @@ export interface DNSResult {
   hostname: string
   ip: string
   error?: string
-}
-
-export function parseLines(input: string): string[] {
-  const ret: string[] = []
-  input.split('\n').forEach((line: string): void => {
-    const val = line.trim()
-    if (val) {
-      ret.push(val)
-    }
-  })
-
-  return ret
 }
 
 export function parseServer(input: string): Server {
@@ -139,16 +129,6 @@ export async function testConnect(server: Server): Promise<TestResult> {
       ret.error = 'timeout'
       resolve(ret)
       socket.destroy()
-    })
-  })
-}
-
-async function setProxy(proxy: string): Promise<void> {
-  ipcRenderer.send('setProxy', proxy)
-
-  return new Promise(resolve => {
-    ipcRenderer.once('proxyChanged', () => {
-      resolve()
     })
   })
 }

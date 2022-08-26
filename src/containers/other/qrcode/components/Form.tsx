@@ -4,9 +4,9 @@ import { Form, Input, Space, Button, InputNumber, message } from 'antd'
 import { FormInstance } from 'antd/es/form'
 import qrcode from 'qrcode'
 import fs from 'fs'
-import { clipboard, nativeImage, ipcRenderer, shell } from 'electron'
+import { clipboard, nativeImage, shell } from 'electron'
 
-import { randomStr, parseDataURI } from '@utils'
+import { randomStr, parseDataURI, getSavePath } from '@utils'
 import { formItemLayout, tailFormItemLayout } from '@constants'
 import '../less/styles.less'
 
@@ -55,10 +55,7 @@ export default class PageForm extends Component<QRCode.CommonProps> {
     }
 
     const { data } = parseDataURI(result)
-    const savePath = ipcRenderer.sendSync('showSaveDialog', {
-      defaultPath: randomStr(32) + '.png',
-      properties: []
-    })
+    const savePath = getSavePath(randomStr(32) + '.png')
 
     if (savePath) {
       fs.writeFileSync(savePath, data, 'base64')

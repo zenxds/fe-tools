@@ -15,14 +15,14 @@ import axios from 'axios'
 import fs from 'fs'
 import path from 'path'
 import { once } from 'events'
-import { ipcRenderer, shell } from 'electron'
+import { shell } from 'electron'
 
 import { formItemLayout, tailFormItemLayout } from '@constants'
-import { randomStr, parsePath, md5File, substitute } from '@utils'
+import { randomStr, parsePath, md5File, substitute, setProxy, getSaveDirectory } from '@utils'
 import '../less/styles.less'
 
 const http = axios.create({
-  adapter: require('axios/lib/adapters/http'),
+  adapter: window.require('axios/lib/adapters/http'),
 })
 
 interface IState {
@@ -34,6 +34,7 @@ interface IValues {
   input: string
   filterType: IState['filterType']
   fileNameFormat: IState['fileNameFormat']
+  proxy?: string
   customFilter?: string
   customFileName?: string
 }
@@ -78,7 +79,7 @@ export default class PageForm extends Component<Download.CommonProps> {
 
   handleFinish = async (values: IValues): Promise<void> => {
     const { actions } = this.props
-    const { fileNameFormat, customFileName } = values
+    const { fileNameFormat, customFileName, proxy } = values
     const urls = this.getUrls(values)
 
     if (!urls.length) {
@@ -86,47 +87,62 @@ export default class PageForm extends Component<Download.CommonProps> {
       return
     }
 
-    const savePath = ipcRenderer.sendSync('showOpenDialog', {
-      properties: ['openDirectory', 'createDirectory'],
-    })[0]
+    const saveDirectory = getSaveDirectory()
+    if (!saveDirectory) {
+      return
+    }
 
     actions!.merge({
       isLoading: true,
     })
 
-    const files = await Promise.all(
-      urls.map(async (url, index) => {
-        const { extname, filename } = parsePath(url)
-        const randomName = randomStr(16)
+    if (proxy) {
+      await setProxy(proxy)
+    }
 
-        const response = await http({
-          url,
-          responseType: 'stream',
-        })
-        const requestStream = response.data
-        const filePath = path.join(savePath, randomName + extname)
+    try {
+      const files = await Promise.all(
+        urls.map(async (url, index) => {
+          const { extname, filename } = parsePath(url)
+          const randomName = randomStr(16)
 
-        await once(requestStream.pipe(fs.createWriteStream(filePath)), 'finish')
-        const md5 = await md5File(filePath)
-        const names: Record<IState['fileNameFormat'], string> = {
-          original: filename,
-          random: randomName,
-          md5,
-          custom: substitute(customFileName || '', {
-            md5,
-            index,
+          const response = await http({
+            url,
+            responseType: 'stream',
+          })
+          const requestStream = response.data
+          const filePath = path.join(saveDirectory, randomName + extname)
+
+          await once(requestStream.pipe(fs.createWriteStream(filePath)), 'finish')
+          const md5 = await md5File(filePath)
+          const names: Record<IState['fileNameFormat'], string> = {
+            original: filename,
             random: randomName,
-          }),
-        }
+            md5,
+            custom: substitute(customFileName || '', {
+              md5,
+              index,
+              random: randomName,
+            }),
+          }
 
-        const newPath = path.join(savePath, names[fileNameFormat] + extname)
-        fs.renameSync(filePath, newPath)
-        return newPath
-      }),
-    )
+          const newPath = path.join(saveDirectory, names[fileNameFormat] + extname)
+          fs.renameSync(filePath, newPath)
+          return newPath
+        }),
+      )
 
-    message.success('下载成功')
-    shell.showItemInFolder(files[0])
+      message.success('下载成功')
+      shell.showItemInFolder(files[0])
+
+    } catch(err) {
+      message.error(err.message)
+    }
+
+    if (proxy) {
+      await setProxy('')
+    }
+
     actions!.merge({
       isLoading: false,
     })
@@ -146,6 +162,9 @@ export default class PageForm extends Component<Download.CommonProps> {
         >
           <Form.Item label="下载地址" name="input" rules={[{ required: true }]}>
             <Input.TextArea rows={5} placeholder="" />
+          </Form.Item>
+          <Form.Item label="代理" name="proxy">
+            <Input placeholder="socks://127.0.0.1:1113" />
           </Form.Item>
           <Form.Item label="过滤类型" name="filterType">
             <Radio.Group

@@ -19,11 +19,11 @@ import {
   TestResult,
   DNSResult,
   parseServers,
-  parseLines,
   resolveDNS,
   formatTime,
   sortResults,
 } from '@utils/connect'
+import { parseLines } from '@utils'
 
 import { formItemLayout, tailFormItemLayout } from '@constants'
 import '../less/styles.less'

@@ -6,11 +6,17 @@ import { UploadFile, UploadProps } from 'antd/lib/upload/interface'
 
 import fs from 'fs'
 import path from 'path'
-import { clipboard, nativeImage, ipcRenderer, shell } from 'electron'
+import { clipboard, nativeImage, shell } from 'electron'
 import dataURI from 'datauri'
 // import DatauriParser from 'datauri/parser'
 
-import { getClipboardFilePath, randomStr, parseDataURI, toPNG } from '@utils'
+import {
+  getClipboardFilePath,
+  randomStr,
+  parseDataURI,
+  toPNG,
+  getSavePath,
+} from '@utils'
 import { encodeSVG, decodeSVG } from '@utils/encode/base64'
 import * as decorators from '@decorators'
 
@@ -58,10 +64,12 @@ export default class Page extends Component<
     })
   }
 
-  handlePaste = async (): Promise<void> => {
+  handlePaste = async (event: ClipboardEvent): Promise<void> => {
     const filePath = getClipboardFilePath()
     if (filePath) {
-      return this.transform(filePath)
+      this.transform(filePath)
+      event.preventDefault()
+      return
     }
 
     const img = clipboard.readImage()
@@ -69,12 +77,15 @@ export default class Page extends Component<
       this.props.actions!.merge({
         output: img.toDataURL(),
       })
+
+      event.preventDefault()
       return
     }
 
     const text = clipboard.readText()
     if (/<svg/.test(text)) {
       this.handleSVG(text)
+      event.preventDefault()
     }
   }
 
@@ -148,19 +159,18 @@ export default class Page extends Component<
     }
 
     const { ext, data } = parseDataURI(output)
-    const savePath = ipcRenderer.sendSync('showSaveDialog', {
-      defaultPath: randomStr(32) + '.' + ext,
-      properties: [],
-    })
+    const savePath = getSavePath(randomStr(32) + '.' + ext)
 
     if (savePath) {
-      if (ext === 'svg') {
-        fs.writeFileSync(savePath, decodeSVG(data), 'utf8')
-      } else {
-        fs.writeFileSync(savePath, data, 'base64')
-      }
-      shell.showItemInFolder(savePath)
+      return
     }
+
+    if (ext === 'svg') {
+      fs.writeFileSync(savePath, decodeSVG(data), 'utf8')
+    } else {
+      fs.writeFileSync(savePath, data, 'base64')
+    }
+    shell.showItemInFolder(savePath)
   }
 
   render(): ReactElement {
@@ -198,13 +208,11 @@ export default class Page extends Component<
                 <Button onClick={this.handleCopy} type="default">
                   复制
                 </Button>
-                {
-                  /image\/svg/.test(output) ? (
-                    <Button onClick={this.handleCopyPNG} type="default">
-                      复制为PNG
-                    </Button>
-                  ) : null
-                }
+                {/image\/svg/.test(output) ? (
+                  <Button onClick={this.handleCopyPNG} type="default">
+                    复制为PNG
+                  </Button>
+                ) : null}
                 <Button onClick={this.handleSave} type="default">
                   保存
                 </Button>

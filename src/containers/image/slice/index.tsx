@@ -7,9 +7,9 @@ import { FormInstance } from 'antd/es/form'
 import Jimp from 'jimp'
 
 import path from 'path'
-import { ipcRenderer, shell } from 'electron'
-import { parsePath } from '@utils'
+import { shell } from 'electron'
 
+import { parsePath, getClipboardFilePath, getSaveDirectory } from '@utils'
 import * as decorators from '@decorators'
 
 import SettingForm from './components/Form'
@@ -28,6 +28,22 @@ export default class Page extends Component<
 > {
   settingFormRef: React.RefObject<FormInstance>
 
+  componentDidMount() {
+    document.addEventListener('paste', this.handlePaste, false)
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('paste', this.handlePaste, false)
+  }
+
+  handlePaste = async (event: ClipboardEvent): Promise<void> => {
+    const filePath = getClipboardFilePath()
+    if (filePath) {
+      this.process(filePath)
+      event.preventDefault()
+    }
+  }
+
   getUploadProps = (): UploadProps => {
     return {
       accept: 'image/png, image/jpeg, image/jpg',
@@ -35,7 +51,9 @@ export default class Page extends Component<
       fileList: [],
       beforeUpload: (): boolean => false,
       onChange: info => {
-        this.slice(info.fileList)
+        if (info.fileList.length) {
+          this.process(this.getFilePath(info.fileList[0]))
+        }
       },
     }
   }
@@ -44,26 +62,17 @@ export default class Page extends Component<
     return file.originFileObj?.path || ''
   }
 
-  async slice(files: UploadFile[]): Promise<void> {
-    if (!files.length) {
-      return
-    }
-
+  async process(filePath: string): Promise<void> {
     const sliceHeight = this.props.store!.height
     if (!sliceHeight) {
       message.error('请先设置裁切高度')
       return
     }
 
-    const file = files[0]
-    const filePath = this.getFilePath(file)
     const { extname, filename, dirname } = parsePath(filePath)
-    const savePath = ipcRenderer.sendSync('showOpenDialog', {
-      defaultPath: dirname,
-      properties: ['openDirectory', 'createDirectory'],
-    })[0]
+    const saveDirectory = getSaveDirectory(dirname)
 
-    if (!savePath) {
+    if (!saveDirectory) {
       return
     }
 
@@ -71,6 +80,7 @@ export default class Page extends Component<
       isLoading: true,
     })
 
+    const slicePaths: string[] = []
     try {
       const image = await Jimp.read(filePath)
       const { width, height } = image.bitmap
@@ -91,16 +101,20 @@ export default class Page extends Component<
           currentHeight = remain
         }
 
+        const filePath = path.join(saveDirectory, `${filename}-${i}${extname}`)
+        slicePaths.push(filePath)
+
         await image
           .clone()
           .crop(0, height - remain, width, currentHeight)
-          .writeAsync(path.join(savePath, `${filename}-${i}${extname}`))
+          .writeAsync(filePath)
         i = i + 1
         remain = remain - currentHeight
       }
 
       message.success('裁切成功')
-      shell.openPath(savePath)
+      // shell.openPath(saveDirectory)
+      shell.showItemInFolder(slicePaths[0])
     } catch (err) {
       message.error(err.message)
     }

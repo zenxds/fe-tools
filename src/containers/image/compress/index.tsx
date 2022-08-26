@@ -7,12 +7,18 @@ import { UploadFile, UploadProps } from 'antd/lib/upload/interface'
 import { FormInstance } from 'antd/es/form'
 
 import path from 'path'
-import { ipcRenderer, clipboard, shell } from 'electron'
+import { clipboard, shell } from 'electron'
 import dataURI from 'datauri'
 import tinify from 'tinify'
 
 import * as decorators from '@decorators'
-import { randomStr, getClipboardFilePath, parseDataURI } from '@utils'
+import {
+  randomStr,
+  getClipboardFilePath,
+  parseDataURI,
+  getSaveDirectory,
+  getSavePath,
+} from '@utils'
 
 import SettingForm from './components/Form'
 import actions from './actions'
@@ -21,11 +27,13 @@ import './less/styles.less'
 
 @decorators.provider({
   actions,
-  store
+  store,
 })
 @inject('store', 'actions', 'dataStore')
 @observer
-export default class Page extends Component<CommonProps & ImageCompress.CommonProps> {
+export default class Page extends Component<
+  CommonProps & ImageCompress.CommonProps
+> {
   settingFormRef: React.RefObject<FormInstance>
   debounceCompress: DebouncedFunc<typeof Page.prototype.compress>
 
@@ -38,25 +46,25 @@ export default class Page extends Component<CommonProps & ImageCompress.CommonPr
 
   handleSetting = () => {
     this.props.actions!.merge({
-      showSettingModal: true
+      showSettingModal: true,
     })
   }
 
-  handleSettingOk = async(): Promise<void> => {
+  handleSettingOk = async (): Promise<void> => {
     try {
       const values = await this.settingFormRef.current?.validateFields()
       message.success('保存成功')
       tinify.key = values.apiKey
       this.props.dataStore.set('tinifyKey', values.apiKey)
       this.props.actions!.merge({
-        showSettingModal: false
+        showSettingModal: false,
       })
-    } catch(err) {}
+    } catch (err) {}
   }
 
   handleCancelSetting = (): void => {
     this.props.actions!.merge({
-      showSettingModal: false
+      showSettingModal: false,
     })
   }
 
@@ -75,7 +83,7 @@ export default class Page extends Component<CommonProps & ImageCompress.CommonPr
     document.removeEventListener('paste', this.handlePaste, false)
   }
 
-  handlePaste = async(): Promise<void> => {
+  handlePaste = async (): Promise<void> => {
     const img = clipboard.readImage()
 
     if (img.isEmpty()) {
@@ -86,17 +94,13 @@ export default class Page extends Component<CommonProps & ImageCompress.CommonPr
     const input = (filePath ? await dataURI(filePath) : img.toDataURL()) || ''
     const { ext, data } = parseDataURI(input)
 
-    const savePath = ipcRenderer.sendSync('showSaveDialog', {
-      defaultPath: randomStr(32) + '.' + ext,
-      properties: []
-    })
-
+    const savePath = getSavePath(randomStr(32) + '.' + ext)
     if (!savePath) {
       return
     }
 
     this.props.actions!.merge({
-      isLoading: true
+      isLoading: true,
     })
 
     try {
@@ -105,12 +109,12 @@ export default class Page extends Component<CommonProps & ImageCompress.CommonPr
 
       message.success('压缩成功')
       shell.showItemInFolder(savePath)
-    } catch(err) {
+    } catch (err) {
       message.error(err.message)
     }
 
     this.props.actions!.merge({
-      isLoading: false
+      isLoading: false,
     })
   }
 
@@ -135,46 +139,43 @@ export default class Page extends Component<CommonProps & ImageCompress.CommonPr
       return
     }
 
-    // open返回的是数组
-    const savePath = files.length > 1 ? ipcRenderer.sendSync('showOpenDialog', {
-      defaultPath: path.dirname(this.getFilePath(files[0])),
-      properties: ['openDirectory', 'createDirectory'],
-    }): ipcRenderer.sendSync('showSaveDialog', {
-      defaultPath: this.getFilePath(files[0]),
-      properties: []
-    })
-
+    const filePath = this.getFilePath(files[0])
+    const savePath =
+      files.length > 1
+        ? getSaveDirectory(path.dirname(filePath))
+        : getSavePath(filePath)
     if (!savePath) {
       return
     }
 
     this.props.actions!.merge({
-      isLoading: true
+      isLoading: true,
     })
 
     try {
       if (files.length > 1) {
-        await Promise.all(files.map((file: UploadFile) => {
-          const p = this.getFilePath(file)
-          return tinify.fromFile(p).toFile(savePath[0] + '/' + path.basename(p))
-        }))
+        await Promise.all(
+          files.map((file: UploadFile) => {
+            const p = this.getFilePath(file)
+            return tinify.fromFile(p).toFile(path.join(savePath, path.basename(p)))
+          }),
+        )
       } else {
-        const p = this.getFilePath(files[0])
-        await tinify.fromFile(p).toFile(savePath)
+        await tinify.fromFile(filePath).toFile(savePath)
       }
 
       message.success('压缩成功')
       if (files.length > 1) {
-        shell.openPath(savePath[0])
+        shell.openPath(savePath)
       } else {
         shell.showItemInFolder(savePath)
       }
-    } catch(err) {
+    } catch (err) {
       message.error(err.message)
     }
 
     this.props.actions!.merge({
-      isLoading: false
+      isLoading: false,
     })
   }
 
@@ -182,8 +183,16 @@ export default class Page extends Component<CommonProps & ImageCompress.CommonPr
     const { showSettingModal } = this.props.store!
 
     return (
-      <Modal title="压缩配置" visible={showSettingModal} onCancel={this.handleCancelSetting} onOk={this.handleSettingOk}>
-        <SettingForm dataStore={this.props.dataStore} forwardRef={this.settingFormRef} />
+      <Modal
+        title="压缩配置"
+        visible={showSettingModal}
+        onCancel={this.handleCancelSetting}
+        onOk={this.handleSettingOk}
+      >
+        <SettingForm
+          dataStore={this.props.dataStore}
+          forwardRef={this.settingFormRef}
+        />
       </Modal>
     )
   }
@@ -205,7 +214,7 @@ export default class Page extends Component<CommonProps & ImageCompress.CommonPr
           </Upload.Dragger>
         </Spin>
 
-        { this.renderSettingModal() }
+        {this.renderSettingModal()}
       </div>
     )
   }
