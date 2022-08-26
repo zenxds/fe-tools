@@ -161,7 +161,7 @@ export default class Page extends Component<
     const { ext, data } = parseDataURI(output)
     const savePath = getSavePath(randomStr(32) + '.' + ext)
 
-    if (savePath) {
+    if (!savePath) {
       return
     }
 
