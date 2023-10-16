@@ -1,15 +1,15 @@
 module.exports = {
-  appId: 'com.dingxiang.app',
+  appId: 'com.zenxds.app',
   productName: '前端工具箱',
   directories: {
     output: 'release',
   },
-  publish: [
-    {
-      provider: 'generic',
-      url: 'https://fe.dingxiang-inc.com/download/fe-tools',
-    }
-  ],
+  // publish: [
+  //   {
+  //     provider: 'generic',
+  //     url: 'https://xx.com/download/fe-tools',
+  //   }
+  // ],
   files: [
     '**/*',
     '!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}',
